@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Videos@Home</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_discover">Discover Servers</string>
+    <string name="pick_server">Pick a Server</string>
+    <string name="media_route_menu_title">Cast</string>
+
+    <!--  Used in Error Dialog -->
+    <string name="ok">OK</string>
+    <!-- Title of the Error Dialog -->
+    <string name="error">Error</string>
+    <!-- Shown in VideoCastControllerActivity -->
+    <string name="casting_to_device">Casting to %1$s</string>
+    <string name="loading">Loading&#8230;</string>
+    <!-- Used in Router Controller Dialog -->
+    <string name="no_media_info">No media information available</string>
+    <!-- Session Recovery Dialog message -->
+    <string name="session_reconnection_attempt">Attempting to recover previous session&#8230;</string>
+    <!-- onApplicationConnectionFailed() errors -->
+    <string name="failed_to_launch_app">Failed to launch application</string>
+    <string name="failed_app_launch_timeout">The request to launch the application has timed out!</string>
+    <string name="failed_to_find_app">The application you are trying to launch is not available on your Chromecast device</string>
+    <!--  Error messages for the play.pause in mini player -->
+    <string name="failed_to_play">Failed to start the playback of media</string>
+    <string name="failed_to_pause">Failed to pause the playback of media</string>
+    <string name="failed_unknown">An unknown error was encountered</string>
+    <!--  Failure to connect -->
+    <string name="failed_to_connect">Could not connect to the device</string>
+    <string name="action_download">Download</string>
+    <string name="action_downloads">Downloads</string>
+
+</resources>
