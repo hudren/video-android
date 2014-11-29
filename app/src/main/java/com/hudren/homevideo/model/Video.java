@@ -167,9 +167,7 @@ public class Video implements Serializable
 
     public boolean canDownload()
     {
-        boolean can = true;
-
-        return true;
+        return getDownload() != null;
     }
 
     public boolean canCast()

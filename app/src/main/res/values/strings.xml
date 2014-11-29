@@ -31,5 +31,8 @@
     <string name="failed_to_connect">Could not connect to the device</string>
     <string name="action_download">Download</string>
     <string name="action_downloads">Downloads</string>
+    <string name="stream_desc">streaming icon</string>
+    <string name="cast_desc">casting icon</string>
+    <string name="download_desc">download icon</string>
 
 </resources>

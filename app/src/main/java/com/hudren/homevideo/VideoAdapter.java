@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hudren.homevideo.model.Video;
@@ -89,7 +90,7 @@ public class VideoAdapter extends BaseAdapter
     {
         View view = convertView;
         if ( view == null )
-            view = inflater.inflate( android.R.layout.simple_list_item_activated_2, parent, false );
+            view = inflater.inflate( R.layout.video_list_item, parent, false );
 
         bindView( position, view );
 
@@ -134,5 +135,14 @@ public class VideoAdapter extends BaseAdapter
         }
 
         text2.setText( details );
+
+        // Change visibility of icons
+        ImageView icon = (ImageView) view.findViewById( R.id.download );
+        if ( icon != null )
+            icon.setVisibility( video.canDownload() ? View.VISIBLE : View.INVISIBLE );
+
+        icon = (ImageView) view.findViewById( R.id.cast );
+        if ( icon != null )
+            icon.setVisibility( video.canCast() ? View.VISIBLE : View.INVISIBLE );
     }
 }
