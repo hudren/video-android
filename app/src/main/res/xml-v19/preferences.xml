@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="STREAM_HIGHEST_QUALITY"
+        android:title="@string/pref_stream_highest">
+    </CheckBoxPreference>
+
+    <PreferenceCategory
+        android:title="@string/captions_settings">
+        <PreferenceScreen
+            android:key="CAPTION_KEY"
+            android:title="@string/captions">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.google.sample.castcompanionlibrary.cast.tracks.CaptionsPreferenceActivity"
+                android:targetPackage="com.hudren.homevideo"/>
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+</PreferenceScreen>

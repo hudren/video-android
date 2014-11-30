@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -59,6 +60,8 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
+
+        PreferenceManager.setDefaultValues( this, R.xml.preferences, false );
 
         boolean castAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable( this ) == ConnectionResult.SUCCESS;
 
@@ -213,9 +216,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             return true;
 
         case R.id.action_settings:
-            // Launch accessibility preferences for captions / subtitles
-            Intent intent = new Intent( Intent.ACTION_VIEW );
-            intent.setClassName( getPackageName(), "com.google.sample.castcompanionlibrary.cast.tracks.CaptionsPreferenceActivity" );
+            Intent intent = new Intent( "com.hudren.homevideo.VIEW_SETTINGS" );
             startActivity( intent );
 
             return true;
@@ -260,7 +261,9 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     {
         try
         {
-            Container container = video.getStreaming();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
+
+            Container container = video.getStreaming( prefs.getBoolean( "STREAM_HIGHEST_QUALITY", true ) );
 
             Intent shareIntent = new Intent( Intent.ACTION_VIEW );
             shareIntent.setDataAndType( Uri.parse( container.url ), container.mimetype );

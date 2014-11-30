@@ -34,5 +34,9 @@
     <string name="stream_desc">streaming icon</string>
     <string name="cast_desc">casting icon</string>
     <string name="download_desc">download icon</string>
+    <!-- Preferences -->
+    <string name="pref_stream_highest">Stream Highest Quality</string>
+    <string name="captions_settings">Captions Settings</string>
+    <string name="captions">Captions</string>
 
 </resources>

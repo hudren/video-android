@@ -60,8 +60,11 @@ public class Video implements Serializable
         return FormatUtils.durationOf( duration );
     }
 
-    public Container getStreaming()
+    public Container getStreaming( boolean highest_quality )
     {
+        if ( !highest_quality && containers.size() > 1 )
+            return containers.get( 1 );
+
         return containers.get( 0 );
     }
 
