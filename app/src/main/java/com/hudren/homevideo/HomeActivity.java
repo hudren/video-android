@@ -117,7 +117,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
         editor.putString( "videos", json );
-        editor.commit();
+        editor.apply();
 
         setTitle( name );
         setVideos( json );
@@ -217,12 +217,19 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         case R.id.action_settings:
             Intent intent = new Intent( "com.hudren.homevideo.VIEW_SETTINGS" );
-            startActivity( intent );
-
+            startActivityForResult( intent, 1 );
             return true;
         }
 
         return super.onOptionsItemSelected( item );
+    }
+
+    @Override
+    protected void onActivityResult( int requestCode, int resultCode, Intent data )
+    {
+        // Settings
+        if ( requestCode == 1 )
+            fragment.sortVideos();
     }
 
     /**
@@ -234,7 +241,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     @Override
     public boolean dispatchKeyEvent( KeyEvent event )
     {
-        if ( castManager.onDispatchVolumeKeyEvent( event, VOLUME_INCREMENT ) )
+        if ( castManager != null && castManager.onDispatchVolumeKeyEvent( event, VOLUME_INCREMENT ) )
             return true;
 
         return super.dispatchKeyEvent( event );
@@ -262,8 +269,9 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         try
         {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
+            boolean quality = prefs.getBoolean( "stream_highest_quality", true );
 
-            Container container = video.getStreaming( prefs.getBoolean( "STREAM_HIGHEST_QUALITY", true ) );
+            Container container = video.getStreaming( quality );
 
             Intent shareIntent = new Intent( Intent.ACTION_VIEW );
             shareIntent.setDataAndType( Uri.parse( container.url ), container.mimetype );

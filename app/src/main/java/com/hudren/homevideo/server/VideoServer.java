@@ -62,7 +62,7 @@ public class VideoServer
         prefs.putString( "SERVER_NAME", name );
         prefs.putString( "SERVER_URL", url );
 
-        prefs.commit();
+        prefs.apply();
     }
 
     /**

@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ListPreference
+        android:defaultValue="MOST_RECENT"
+        android:entries="@array/pref_sort_videos"
+        android:entryValues="@array/pref_sort_videos_values"
+        android:key="sort_videos"
+        android:title="@string/pref_sort_videos">
+    </ListPreference>
+
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="STREAM_HIGHEST_QUALITY"
+        android:key="stream_highest_quality"
         android:title="@string/pref_stream_highest">
     </CheckBoxPreference>
 

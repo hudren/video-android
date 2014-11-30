@@ -38,5 +38,8 @@
     <string name="pref_stream_highest">Stream Highest Quality</string>
     <string name="captions_settings">Captions Settings</string>
     <string name="captions">Captions</string>
+    <string name="pref_sort_videos">Sort Videos</string>
+    <string name="sort_most_recent">Most Recent First</string>
+    <string name="sort_alphabetic">Alphabetically</string>
 
 </resources>

@@ -28,6 +28,13 @@ public class VideoAdapter extends BaseAdapter
     private boolean more;
     private String userLanguage;
 
+    enum SortOrder
+    {
+        MOST_RECENT, ALPHABETICAL;
+    }
+
+    private SortOrder order = SortOrder.MOST_RECENT;
+
     private List< Video > videos = new ArrayList< Video >();
 
     public VideoAdapter( Context context )
@@ -51,20 +58,46 @@ public class VideoAdapter extends BaseAdapter
      */
     public void setVideos( List< Video > videos )
     {
-        // TODO: add sorting to UI
-        Collections.sort( videos, Collections.reverseOrder( new Comparator< Video >()
-        {
-            @Override
-            public int compare( Video lhs, Video rhs )
-            {
-                return Long.valueOf( lhs.getLastModified() ).compareTo( rhs.getLastModified() );
-            }
-
-        } ) );
-
         this.videos = videos;
 
+        sortVideos();
+
         notifyDataSetChanged();
+    }
+
+    public void setSortOrder( SortOrder order )
+    {
+        this.order = order;
+
+        sortVideos();
+    }
+
+    private void sortVideos()
+    {
+        if ( order == SortOrder.ALPHABETICAL )
+        {
+            Collections.sort( videos, new Comparator< Video >()
+            {
+                @Override
+                public int compare( Video lhs, Video rhs )
+                {
+                    return lhs.getTitle().compareTo( rhs.getTitle() );
+                }
+
+            } );
+        }
+        else
+        {
+            Collections.sort( videos, Collections.reverseOrder( new Comparator< Video >()
+            {
+                @Override
+                public int compare( Video lhs, Video rhs )
+                {
+                    return Long.valueOf( lhs.getLastModified() ).compareTo( rhs.getLastModified() );
+                }
+
+            } ) );
+        }
     }
 
     @Override

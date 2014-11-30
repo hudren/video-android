@@ -1,9 +1,11 @@
 package com.hudren.homevideo;
 
 import android.app.ListFragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -39,6 +41,8 @@ public class VideoFragment extends ListFragment
         adapter = new VideoAdapter( getActivity() );
         setListAdapter( adapter );
 
+        sortVideos();
+
         return rootView;
     }
 
@@ -60,6 +64,17 @@ public class VideoFragment extends ListFragment
     public void setVideos( List< Video > videos )
     {
         adapter.setVideos( videos );
+    }
+
+    /**
+     * Sorts the videos according to the user preference.
+     */
+    public void sortVideos()
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( getActivity() );
+        String order = prefs.getString( "sort_videos", "MOST_RECENT" );
+
+        adapter.setSortOrder( VideoAdapter.SortOrder.valueOf( order ) );
     }
 
     /**
