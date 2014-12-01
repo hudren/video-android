@@ -1,4 +1,4 @@
 include ':app'
 
 include ':CastCompanionLibrary-android'
-project(':CastCompanionLibrary-android').projectDir = new File( '../CastCompanionLibrary-android')
+project(':CastCompanionLibrary-android').projectDir = new File('../CastCompanionLibrary-android')

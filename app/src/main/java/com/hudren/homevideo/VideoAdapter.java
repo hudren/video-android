@@ -93,7 +93,7 @@ public class VideoAdapter extends BaseAdapter
                 @Override
                 public int compare( Video lhs, Video rhs )
                 {
-                    return Long.valueOf( lhs.getLastModified() ).compareTo( rhs.getLastModified() );
+                    return Long.valueOf( lhs.getModified() ).compareTo( rhs.getModified() );
                 }
 
             } ) );

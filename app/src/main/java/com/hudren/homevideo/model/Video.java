@@ -122,14 +122,25 @@ public class Video implements Serializable
 
     public long getLastModified()
     {
-        long modified = 0;
+        long modified = containers.get( 0 ).modified;
 
         for ( Container container : containers )
-            if ( container.modified > modified )
-                modified = container.modified;
+            modified = Math.max( modified, container.modified );
 
         return modified;
     }
+
+
+    public long getModified()
+    {
+        long modified = containers.get( 0 ).modified;
+
+        for ( Container container : containers )
+            modified = Math.min( modified, container.modified );
+
+        return modified;
+    }
+
 
     public String getQuality()
     {
