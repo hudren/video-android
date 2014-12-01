@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,6 +38,14 @@ public class VideoServer
         this.activity = activity;
 
         loadPrefs();
+
+        // Initialize emulator environment to work with server running on local machine
+        if (network == null)
+        {
+            boolean isEmulator = Build.HARDWARE.contains( "goldfish" );
+            if ( isEmulator )
+                saveServer( "Local Server", "http://10.0.2.2:8090" );
+        }
     }
 
     /**
