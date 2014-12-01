@@ -30,7 +30,7 @@ public class VideoAdapter extends BaseAdapter
 
     enum SortOrder
     {
-        MOST_RECENT, ALPHABETICAL;
+        ALPHABETICAL, MOST_RECENT, OLDEST;
     }
 
     private SortOrder order = SortOrder.MOST_RECENT;
@@ -86,7 +86,7 @@ public class VideoAdapter extends BaseAdapter
 
             } );
         }
-        else
+        else if (order == SortOrder.MOST_RECENT)
         {
             Collections.sort( videos, Collections.reverseOrder( new Comparator< Video >()
             {
@@ -97,6 +97,18 @@ public class VideoAdapter extends BaseAdapter
                 }
 
             } ) );
+        }
+        else if (order == SortOrder.OLDEST)
+        {
+            Collections.sort( videos, new Comparator< Video >()
+            {
+                @Override
+                public int compare( Video lhs, Video rhs )
+                {
+                    return Long.valueOf( lhs.getModified() ).compareTo( rhs.getModified() );
+                }
+
+            } );
         }
     }
 
