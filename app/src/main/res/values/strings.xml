@@ -41,5 +41,6 @@
     <string name="pref_sort_videos">Sort Videos</string>
     <string name="sort_most_recent">Most Recent First</string>
     <string name="sort_alphabetic">Alphabetically</string>
+    <string name="pref_launch_downloads">Launch Downloads</string>
 
 </resources>

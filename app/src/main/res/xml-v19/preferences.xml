@@ -15,6 +15,12 @@
         android:title="@string/pref_stream_highest">
     </CheckBoxPreference>
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="launch_downloads"
+        android:title="@string/pref_launch_downloads">
+    </CheckBoxPreference>
+
     <PreferenceCategory
         android:title="@string/captions_settings">
         <PreferenceScreen

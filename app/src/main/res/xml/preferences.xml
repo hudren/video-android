@@ -15,4 +15,10 @@
         android:title="@string/pref_stream_highest">
     </CheckBoxPreference>
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="launch_downloads"
+        android:title="@string/pref_launch_downloads">
+    </CheckBoxPreference>
+
 </PreferenceScreen>

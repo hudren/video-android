@@ -45,7 +45,6 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     @SuppressWarnings("unused")
     private static final String TAG = "HomeActivity";
 
-    private static final boolean LAUNCH_DOWNLOADS = true;
     private static final double VOLUME_INCREMENT = 0.05;
 
     VideoFragment fragment;
@@ -321,18 +320,19 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
      * Queues the video with the Android Download Manager.
      *
      * @param video The video to download
+     * @param visible  Notification visibility during download
      */
-    public void startDownloading( Video video )
+    public void startDownloading( Video video, boolean visible )
     {
         // Download video file
         Container container = video.getDownload();
-        long id = downloadFile( container.url, video.title, container.mimetype, !LAUNCH_DOWNLOADS );
+        long id = downloadFile( container.url, video.title, container.mimetype, visible );
         new DownloadMonitor( this ).execute( id );
 
         // Download external subtitle files
         if ( video.subtitles != null )
             for ( Subtitle subtitle : video.subtitles )
-                downloadFile( subtitle.url, video.title + " " + subtitle.title + " subtitles", subtitle.mimetype, !LAUNCH_DOWNLOADS );
+                downloadFile( subtitle.url, video.title + " " + subtitle.title + " subtitles", subtitle.mimetype, visible );
     }
 
     /**
@@ -342,14 +342,17 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
      */
     public void startDownloading( List< Video > videos )
     {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
+        boolean launch = prefs.getBoolean( "launch_downloads", false );
+
         // Download downloadable videos
         if ( videos != null )
             for ( Video video : videos )
                 if ( video.canDownload() )
-                    startDownloading( video );
+                    startDownloading( video, !launch );
 
         // Launch Android Downloads app
-        if ( LAUNCH_DOWNLOADS )
+        if ( launch )
             launchDownloads();
     }
 
