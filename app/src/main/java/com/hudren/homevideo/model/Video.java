@@ -14,6 +14,11 @@ import java.util.TreeSet;
  */
 public class Video implements Serializable
 {
+    /**
+     * The bitrate used to determine for high bandwidth videos.
+     */
+    public static final int HIGH_QUALITY_BITRATE = 10000000;
+
     public String title;
     public double duration;
 
@@ -22,6 +27,7 @@ public class Video implements Serializable
     public String episodeTitle;
 
     public String language;
+    public String poster;
 
     List< Container > containers = new ArrayList< Container >();
     public List< Subtitle > subtitles = new ArrayList< Subtitle >();
@@ -60,12 +66,24 @@ public class Video implements Serializable
         return FormatUtils.durationOf( duration );
     }
 
+    /**
+     * Returns the best video for streaming based on quality.
+     *
+     * @param highest_quality True, if there are no bandwidth or performance restrictions
+     * @return The container to be used for streaming
+     */
     public Container getStreaming( boolean highest_quality )
     {
-        if ( !highest_quality && containers.size() > 1 )
-            return containers.get( 1 );
+        Container container = containers.get( 0 );
 
-        return containers.get( 0 );
+        if ( !highest_quality )
+        {
+            int i = 1;
+            while ( i < containers.size() && container.bitrate > HIGH_QUALITY_BITRATE )
+                container = containers.get( i++ );
+        }
+
+        return container;
     }
 
     public Container getDownload()
@@ -177,6 +195,11 @@ public class Video implements Serializable
         Container container = getDownload();
 
         return container != null ? container.getFileSize() : null;
+    }
+
+    public boolean canStream( boolean streamHighQuality )
+    {
+        return streamHighQuality || getStreaming( false ).bitrate < HIGH_QUALITY_BITRATE;
     }
 
     public boolean canDownload()

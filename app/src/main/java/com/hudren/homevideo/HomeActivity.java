@@ -22,6 +22,7 @@ import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.MediaTrack;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.images.WebImage;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -228,7 +229,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     {
         // Settings
         if ( requestCode == 1 )
-            fragment.sortVideos();
+            fragment.onPreferencesChanged();
     }
 
     /**
@@ -378,6 +379,12 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         MediaMetadata metadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
         metadata.putString( MediaMetadata.KEY_TITLE, video.title );
+
+        if ( video.poster != null )
+        {
+            metadata.addImage( new WebImage( Uri.parse( video.poster ) ) );
+            metadata.addImage( new WebImage( Uri.parse( video.poster ) ) );
+        }
 
         // TV series
         if ( video.episode > 0 )

@@ -25,6 +25,7 @@ public class VideoAdapter extends BaseAdapter
 {
     private final LayoutInflater inflater;
 
+    private boolean streamHighQuality;
     private boolean more;
     private String userLanguage;
 
@@ -49,6 +50,16 @@ public class VideoAdapter extends BaseAdapter
         more = metrics.widthPixels / metrics.density > 420;
 
         userLanguage = Locale.getDefault().getDisplayLanguage();
+    }
+
+    /**
+     * Sets whether the streaming indicator should indicate when lower quality streams are not available.
+     *
+     * @param streamHighQuality True, if high bandwidth videos are streamable
+     */
+    public void setHighQualityStreaming( boolean streamHighQuality )
+    {
+        this.streamHighQuality = streamHighQuality;
     }
 
     /**
@@ -86,7 +97,7 @@ public class VideoAdapter extends BaseAdapter
 
             } );
         }
-        else if (order == SortOrder.MOST_RECENT)
+        else if ( order == SortOrder.MOST_RECENT )
         {
             Collections.sort( videos, Collections.reverseOrder( new Comparator< Video >()
             {
@@ -98,7 +109,7 @@ public class VideoAdapter extends BaseAdapter
 
             } ) );
         }
-        else if (order == SortOrder.OLDEST)
+        else if ( order == SortOrder.OLDEST )
         {
             Collections.sort( videos, new Comparator< Video >()
             {
@@ -172,7 +183,9 @@ public class VideoAdapter extends BaseAdapter
 
         if ( more )
         {
-            details += "    " + video.getVideoCodecs();
+            String videoCodecs = video.getVideoCodecs();
+            if ( !"H.264".equals( videoCodecs ) )
+                details += "    " + videoCodecs;
 
             String download = video.getDownloadSize();
             if ( download != null && download.length() > 0 )
@@ -182,7 +195,11 @@ public class VideoAdapter extends BaseAdapter
         text2.setText( details );
 
         // Change visibility of icons
-        ImageView icon = (ImageView) view.findViewById( R.id.download );
+        ImageView icon = (ImageView) view.findViewById( R.id.stream );
+        if ( icon != null )
+            icon.setVisibility( video.canStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
+
+        icon = (ImageView) view.findViewById( R.id.download );
         if ( icon != null )
             icon.setVisibility( video.canDownload() ? View.VISIBLE : View.INVISIBLE );
 

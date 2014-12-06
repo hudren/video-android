@@ -41,7 +41,7 @@ public class VideoFragment extends ListFragment
         adapter = new VideoAdapter( getActivity() );
         setListAdapter( adapter );
 
-        sortVideos();
+        onPreferencesChanged();
 
         return rootView;
     }
@@ -67,13 +67,15 @@ public class VideoFragment extends ListFragment
     }
 
     /**
-     * Sorts the videos according to the user preference.
+     * Updates the video list based on user preferences.
      */
-    public void sortVideos()
+    public void onPreferencesChanged()
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( getActivity() );
-        String order = prefs.getString( "sort_videos", "MOST_RECENT" );
 
+        adapter.setHighQualityStreaming( prefs.getBoolean( "stream_highest_quality", true ) );
+
+        String order = prefs.getString( "sort_videos", "MOST_RECENT" );
         adapter.setSortOrder( VideoAdapter.SortOrder.valueOf( order ) );
     }
 
