@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class HomeActivity extends ActionBarActivity implements IVideoActivity
 {
-    @SuppressWarnings("unused")
+    @SuppressWarnings( "unused" )
     private static final String TAG = "HomeActivity";
 
     private static final double VOLUME_INCREMENT = 0.05;
@@ -161,8 +161,8 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             castManager = VideoApp.getVideoCastManager( this );
             castManager.incrementUiCounter();
 
-            if ( canCast() )
-                setCastAvailable( true );
+            // HACK: device availability callbacks are not reliable
+            setCastAvailable( true );
         }
 
         server.getVideos();
@@ -333,8 +333,8 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     /**
      * Queues the video with the Android Download Manager.
      *
-     * @param video The video to download
-     * @param visible  Notification visibility during download
+     * @param video   The video to download
+     * @param visible Notification visibility during download
      */
     public void startDownloading( Video video, boolean visible )
     {
