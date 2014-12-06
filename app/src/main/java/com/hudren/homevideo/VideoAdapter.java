@@ -57,11 +57,16 @@ public class VideoAdapter extends BaseAdapter
     /**
      * Sets whether the streaming indicator should indicate when lower quality streams are not available.
      *
-     * @param streamHighQuality True, if high bandwidth videos are streamable
+     * @param streamHighQuality True, if high bandwidth videos are stream-able
      */
     public void setHighQualityStreaming( boolean streamHighQuality )
     {
-        this.streamHighQuality = streamHighQuality;
+        if ( streamHighQuality != this.streamHighQuality )
+        {
+            this.streamHighQuality = streamHighQuality;
+
+            notifyDataSetChanged();
+        }
     }
 
     /**
@@ -71,9 +76,12 @@ public class VideoAdapter extends BaseAdapter
      */
     public void setShowCastIndicators( boolean showCastIndicators )
     {
-        this.showCastIndicators = showCastIndicators;
+        if ( showCastIndicators != this.showCastIndicators )
+        {
+            this.showCastIndicators = showCastIndicators;
 
-        notifyDataSetChanged();
+            notifyDataSetChanged();
+        }
     }
 
     /**
@@ -92,9 +100,14 @@ public class VideoAdapter extends BaseAdapter
 
     public void setSortOrder( SortOrder order )
     {
-        this.order = order;
+        if ( order != this.order )
+        {
+            this.order = order;
 
-        sortVideos();
+            sortVideos();
+
+            notifyDataSetChanged();
+        }
     }
 
     private void sortVideos()
