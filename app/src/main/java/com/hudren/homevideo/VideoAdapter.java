@@ -25,9 +25,11 @@ public class VideoAdapter extends BaseAdapter
 {
     private final LayoutInflater inflater;
 
-    private boolean streamHighQuality;
     private boolean more;
     private String userLanguage;
+
+    private boolean streamHighQuality;
+    private boolean showCastIndicators;
 
     enum SortOrder
     {
@@ -60,6 +62,18 @@ public class VideoAdapter extends BaseAdapter
     public void setHighQualityStreaming( boolean streamHighQuality )
     {
         this.streamHighQuality = streamHighQuality;
+    }
+
+    /**
+     * Sets whether the cast indicators should be shown for videos that can be cast.
+     *
+     * @param showCastIndicators True, if the indicators should be shown
+     */
+    public void setShowCastIndicators( boolean showCastIndicators )
+    {
+        this.showCastIndicators = showCastIndicators;
+
+        notifyDataSetChanged();
     }
 
     /**
@@ -205,6 +219,6 @@ public class VideoAdapter extends BaseAdapter
 
         icon = (ImageView) view.findViewById( R.id.cast );
         if ( icon != null )
-            icon.setVisibility( video.canCast() ? View.VISIBLE : View.INVISIBLE );
+            icon.setVisibility( showCastIndicators && video.canCast() ? View.VISIBLE : View.INVISIBLE );
     }
 }

@@ -80,6 +80,16 @@ public class VideoFragment extends ListFragment
     }
 
     /**
+     * Sets whether a device is available for casting.
+     *
+     * @param available True, if casting is possible
+     */
+    public void setCastAvailable( boolean available )
+    {
+        adapter.setShowCastIndicators( available );
+    }
+
+    /**
      * Streams or casts the video when the user taps.
      *
      * @param list     The list view

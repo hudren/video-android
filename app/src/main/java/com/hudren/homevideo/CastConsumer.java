@@ -53,12 +53,20 @@ public class CastConsumer extends VideoCastConsumerImpl
     }
 
     @Override
+    public void onCastAvailabilityChanged( boolean castPresent )
+    {
+        activity.setCastAvailable( castPresent );
+    }
+
+    @Override
     public void onApplicationConnected( ApplicationMetadata appMetadata, String sessionId, boolean wasLaunched )
     {
         Log.d( TAG, "application connected " + wasLaunched );
 
         if ( wasLaunched )
             restoreVolume();
+
+        activity.setCastAvailable( true );
     }
 
     @Override

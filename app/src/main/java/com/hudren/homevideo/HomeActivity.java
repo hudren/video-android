@@ -160,6 +160,9 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         {
             castManager = VideoApp.getVideoCastManager( this );
             castManager.incrementUiCounter();
+
+            if ( canCast() )
+                setCastAvailable( true );
         }
 
         server.getVideos();
@@ -245,6 +248,16 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             return true;
 
         return super.dispatchKeyEvent( event );
+    }
+
+    /**
+     * Sets whether a device is available for casting.
+     *
+     * @param available True, if casting is possible
+     */
+    public void setCastAvailable( boolean available )
+    {
+        fragment.setCastAvailable( available );
     }
 
     /**
