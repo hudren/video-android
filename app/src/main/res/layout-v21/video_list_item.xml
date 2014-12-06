@@ -27,10 +27,10 @@
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
-        android:layout_marginTop="4dip"
         android:layout_marginBottom="4dp"
-        android:textAppearance="?android:attr/textAppearanceListItem"/>
+        android:layout_marginStart="?android:attr/listPreferredItemPaddingStart"
+        android:layout_marginTop="2dip"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <ImageView
         android:id="@+id/stream"
@@ -42,30 +42,30 @@
         android:src="@drawable/ind_stream"/>
 
     <ImageView
-        android:id="@+id/cast"
-        android:layout_width="24dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@android:id/text1"
-        android:layout_toEndOf="@id/stream"
-        android:contentDescription="@string/cast_desc"
-        android:src="@drawable/ind_stream"/>
-
-    <ImageView
         android:id="@+id/download"
         android:layout_width="24dp"
         android:layout_height="wrap_content"
         android:layout_below="@android:id/text1"
-        android:layout_toEndOf="@id/cast"
+        android:layout_toEndOf="@id/stream"
         android:contentDescription="@string/download_desc"
         android:src="@drawable/ind_download"/>
+
+    <ImageView
+        android:id="@+id/cast"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@android:id/text1"
+        android:layout_toEndOf="@id/download"
+        android:contentDescription="@string/cast_desc"
+        android:src="@drawable/ind_cast"/>
 
     <TextView
         android:id="@android:id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@android:id/text1"
-        android:layout_toEndOf="@id/download"
         android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/cast"
         android:textAppearance="?android:attr/textAppearanceListItemSecondary"/>
 
 </TwoLineListItem>

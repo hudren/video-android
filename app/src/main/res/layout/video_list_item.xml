@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="?android:attr/listPreferredItemPaddingLeft"
-        android:layout_marginTop="4dip"
+        android:layout_marginTop="2dip"
         android:textAppearance="?android:attr/textAppearanceListItem"/>
 
     <ImageView
@@ -42,22 +42,22 @@
         android:src="@drawable/ind_stream"/>
 
     <ImageView
-        android:id="@+id/cast"
-        android:layout_width="24dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@android:id/text1"
-        android:layout_toRightOf="@id/stream"
-        android:contentDescription="@string/cast_desc"
-        android:src="@drawable/ind_cast"/>
-
-    <ImageView
         android:id="@+id/download"
         android:layout_width="24dp"
         android:layout_height="wrap_content"
         android:layout_below="@android:id/text1"
-        android:layout_toRightOf="@id/cast"
+        android:layout_toRightOf="@id/stream"
         android:contentDescription="@string/download_desc"
         android:src="@drawable/ind_download"/>
+
+    <ImageView
+        android:id="@+id/cast"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@android:id/text1"
+        android:layout_toRightOf="@id/download"
+        android:contentDescription="@string/cast_desc"
+        android:src="@drawable/ind_cast"/>
 
     <TextView
         android:id="@android:id/text2"
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@android:id/text1"
         android:layout_marginLeft="16dp"
-        android:layout_toRightOf="@id/download"
+        android:layout_toRightOf="@id/cast"
         android:textAppearance="?android:attr/textAppearanceSmall"/>
 
 </TwoLineListItem>
