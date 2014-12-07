@@ -36,8 +36,13 @@ public class Container implements Serializable
         return size < 4187593114L;
     }
 
+    public boolean hasH264()
+    {
+        return video != null && video.contains( "H.264" );
+    }
+
     public boolean canCast()
     {
-        return video != null && video.contains( "H.264" ) && audio != null && audio.contains( "AAC" );
+        return hasH264() && audio != null && audio.contains( "AAC" );
     }
 }

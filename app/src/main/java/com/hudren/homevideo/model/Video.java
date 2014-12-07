@@ -39,16 +39,16 @@ public class Video implements Serializable
             @Override
             public int compare( Container lhs, Container rhs )
             {
-                // Most resolution
-                int comp = Long.valueOf( lhs.width ).compareTo( Long.valueOf( rhs.width ) );
+                // H.264 for hardware decoding
+                int comp = Boolean.valueOf( lhs.hasH264() ).compareTo( rhs.hasH264() );
 
-                // Web standards (H.264)
+                // Most resolution
                 if ( comp == 0 )
-                    comp = Boolean.valueOf( lhs.canCast() ).compareTo( rhs.canCast() );
+                    comp = Integer.valueOf( lhs.width ).compareTo( rhs.width );
 
                 // File size
                 if ( comp == 0 )
-                    comp = Long.valueOf( lhs.size ).compareTo( Long.valueOf( rhs.size ) );
+                    comp = Long.valueOf( lhs.size ).compareTo( rhs.size );
 
                 return comp;
             }
@@ -197,7 +197,7 @@ public class Video implements Serializable
         return container != null ? container.getFileSize() : null;
     }
 
-    public boolean canStream( boolean streamHighQuality )
+    public boolean shouldStream( boolean streamHighQuality )
     {
         return streamHighQuality || getStreaming( false ).bitrate < HIGH_QUALITY_BITRATE;
     }

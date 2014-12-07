@@ -224,7 +224,7 @@ public class VideoAdapter extends BaseAdapter
         // Change visibility of icons
         ImageView icon = (ImageView) view.findViewById( R.id.stream );
         if ( icon != null )
-            icon.setVisibility( video.canStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
+            icon.setVisibility( video.shouldStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
 
         icon = (ImageView) view.findViewById( R.id.download );
         if ( icon != null )
