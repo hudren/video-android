@@ -40,7 +40,7 @@ public class VideoServer
         loadPrefs();
 
         // Initialize emulator environment to work with server running on local machine
-        if (network == null)
+        if ( network == null )
         {
             boolean isEmulator = Build.HARDWARE.contains( "goldfish" );
             if ( isEmulator )

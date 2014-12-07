@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class HomeActivity extends ActionBarActivity implements IVideoActivity
 {
-    @SuppressWarnings( "unused" )
+    @SuppressWarnings("unused")
     private static final String TAG = "HomeActivity";
 
     private static final double VOLUME_INCREMENT = 0.05;
