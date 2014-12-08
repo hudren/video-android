@@ -86,6 +86,27 @@ public class Video implements Serializable
         return container;
     }
 
+    /**
+     * Returns the best video for streaming based on bitrate and display width.
+     *
+     * @param width The maximum display width in pixels
+     * @return The container to be used for streaming
+     */
+    public Container getStreaming( int width )
+    {
+        Container container = containers.get( 0 );
+
+        int i = 1;
+        while ( i < containers.size() && container.bitrate > HIGH_QUALITY_BITRATE )
+            container = containers.get( i++ );
+
+        // Look for next video greater than or equal to desired width
+        while ( i < containers.size() && containers.get( i ).width >= width )
+            container = containers.get( i++ );
+
+        return container;
+    }
+
     public Container getDownload()
     {
         for ( Container container : containers )

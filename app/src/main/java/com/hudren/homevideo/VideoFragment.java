@@ -73,7 +73,7 @@ public class VideoFragment extends ListFragment
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( getActivity() );
 
-        adapter.setHighQualityStreaming( prefs.getBoolean( "stream_highest_quality", true ) );
+        adapter.setHighQualityStreaming( prefs.getBoolean( "stream_highest_quality", false ) );
 
         String order = prefs.getString( "sort_videos", "MOST_RECENT" );
         adapter.setSortOrder( VideoAdapter.SortOrder.valueOf( order ) );

@@ -10,7 +10,7 @@
     </ListPreference>
 
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="stream_highest_quality"
         android:title="@string/pref_stream_highest">
     </CheckBoxPreference>

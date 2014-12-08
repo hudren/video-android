@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.cast.MediaInfo;
@@ -281,10 +283,24 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     {
         try
         {
+            // Get user preference for highest quality
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
-            boolean quality = prefs.getBoolean( "stream_highest_quality", true );
+            boolean quality = prefs.getBoolean( "stream_highest_quality", false );
 
-            Container container = video.getStreaming( quality );
+            Container container;
+            if ( quality )
+                container = video.getStreaming( quality );
+
+            else
+            {
+                // Get movie viewing width
+                WindowManager windowManager = (WindowManager) getSystemService( Context.WINDOW_SERVICE );
+                DisplayMetrics metrics = new DisplayMetrics();
+                windowManager.getDefaultDisplay().getMetrics( metrics );
+                int width = Math.max( metrics.widthPixels, metrics.heightPixels );
+
+                container = video.getStreaming( width );
+            }
 
             Intent shareIntent = new Intent( Intent.ACTION_VIEW );
             shareIntent.setDataAndType( Uri.parse( container.url ), container.mimetype );
