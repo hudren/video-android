@@ -37,7 +37,6 @@ import com.hudren.homevideo.model.Video;
 import com.hudren.homevideo.server.VideoServer;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -48,10 +47,12 @@ import java.util.List;
  */
 public class HomeActivity extends ActionBarActivity implements IVideoActivity
 {
-    @SuppressWarnings("unused")
+    @SuppressWarnings( "unused" )
     private static final String TAG = "HomeActivity";
 
     private static final double VOLUME_INCREMENT = 0.05;
+
+    private static final File downloadDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_MOVIES );
 
     VideoFragment fragment;
 
@@ -61,6 +62,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     private MiniController miniController;
     private CastConsumer castConsumer;
 
+    private boolean connected;
     private int width;
 
     @Override
@@ -132,6 +134,9 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         editor.putString( "videos", json );
         editor.apply();
 
+        connected = true;
+        fragment.setConnected( true );
+
         setTitle( name );
         setVideos( json );
     }
@@ -148,10 +153,14 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         {
         }.getType();
 
-        // Sort the containers with highest priority first
         List< Video > videos = gson.fromJson( json, collectionType );
         for ( Video video : videos )
+        {
+            // Sort the containers with highest priority first
             video.rankContainers();
+
+            video.setDownloaded( downloadedContainer( video ) != null );
+        }
 
         fragment.setVideos( videos );
     }
@@ -184,6 +193,8 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     @Override
     protected void onPause()
     {
+        connected = false;
+
         if ( castManager != null )
             castManager.decrementUiCounter();
 
@@ -285,6 +296,34 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     }
 
     /**
+     * Checks the download folder to determine if the container has been downloaded.
+     *
+     * @param container The container to check
+     * @return The file for this container, or null
+     */
+    public File downloadedFile( Container container )
+    {
+        File file = new File( downloadDir, container.filename );
+
+        return file.exists() ? file : null;
+    }
+
+    /**
+     * Checks the download folder to determine if at least one container has been downloaded.
+     *
+     * @param video The video to check for downloads
+     * @return A downloaded container, or null
+     */
+    public Container downloadedContainer( Video video )
+    {
+        for ( Container container : video.getContainers() )
+            if ( downloadedFile( container ) != null )
+                return container;
+
+        return null;
+    }
+
+    /**
      * Starts an intent to stream / view the video on the current device.
      *
      * @param video The video to stream
@@ -298,45 +337,31 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
             boolean quality = prefs.getBoolean( "stream_highest_quality", false );
 
-            Container container = quality ? video.getStreaming( quality ) : video.getStreaming( width );
+            // Find the best container
+            Container container;
+            if ( !connected )
+                container = downloadedContainer( video );
+            else if ( quality )
+                container = video.getStreaming( true );
+            else
+                container = video.getStreaming( width );
 
-            Intent shareIntent = new Intent( Intent.ACTION_VIEW );
-            shareIntent.setDataAndType( Uri.parse( downloadedUrl( container.url ) ), container.mimetype );
-            shareIntent.putExtra( Intent.EXTRA_TITLE, video.title );
-            startActivity( shareIntent );
+            // Check to see if it has already been downloaded
+            File file = downloadedFile( container );
+            String url = file != null ? Uri.fromFile( file ).toString() : container.url;
+
+            if ( container != null )
+            {
+                Intent shareIntent = new Intent( Intent.ACTION_VIEW );
+                shareIntent.setDataAndType( Uri.parse( url ), container.mimetype );
+                shareIntent.putExtra( Intent.EXTRA_TITLE, video.title );
+                startActivity( shareIntent );
+            }
         }
         catch ( ActivityNotFoundException e )
         {
             Toast.makeText( this, "Compatible video player is not installed.", Toast.LENGTH_LONG ).show();
         }
-    }
-
-    /**
-     * Returns the url of downloaded file if available, or the streaming url.
-     *
-     * @param url The streaming url
-     * @return The url to be used for playback
-     */
-    public String downloadedUrl( String url )
-    {
-        Uri uri = Uri.parse( url );
-        List< String > segments = uri.getPathSegments();
-        final String name = URLDecoder.decode( segments.get( segments.size() - 1 ) );
-
-        File dir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_MOVIES );
-        File[] movies = dir.listFiles( new FilenameFilter()
-        {
-            @Override
-            public boolean accept( File dir, String filename )
-            {
-                return filename.equals( name );
-            }
-        } );
-
-        if ( movies != null && movies.length > 0 )
-            return Uri.fromFile( movies[0] ).toString();
-
-        return url;
     }
 
     /**

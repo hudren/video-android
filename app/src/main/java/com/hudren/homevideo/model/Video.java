@@ -29,6 +29,8 @@ public class Video implements Serializable
     public String language;
     public String poster;
 
+    private boolean downloaded;
+
     List< Container > containers = new ArrayList< Container >();
     public List< Subtitle > subtitles = new ArrayList< Subtitle >();
 
@@ -64,6 +66,11 @@ public class Video implements Serializable
     public String getDuration()
     {
         return FormatUtils.durationOf( duration );
+    }
+
+    public List< Container > getContainers()
+    {
+        return containers;
     }
 
     /**
@@ -123,6 +130,26 @@ public class Video implements Serializable
                 return container;
 
         return null;
+    }
+
+    /**
+     * Sets whether this video exists in the download directory.
+     *
+     * @param downloaded True, if the video has been downloaded
+     */
+    public void setDownloaded( boolean downloaded )
+    {
+        this.downloaded = downloaded;
+    }
+
+    /**
+     * Returns whether this video exists in the download directory.
+     *
+     * @return True, if the video has been downloaded
+     */
+    public boolean isDownloaded()
+    {
+        return downloaded;
     }
 
     @Override

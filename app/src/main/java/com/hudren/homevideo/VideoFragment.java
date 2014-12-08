@@ -90,6 +90,16 @@ public class VideoFragment extends ListFragment
     }
 
     /**
+     * Sets whether this devices is connected to a server.
+     *
+     * @param connected True, if connected
+     */
+    public void setConnected( boolean connected )
+    {
+        adapter.setShowIndicators( connected );
+    }
+
+    /**
      * Streams or casts the video when the user taps.
      *
      * @param list     The list view

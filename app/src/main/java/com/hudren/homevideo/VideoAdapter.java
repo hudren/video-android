@@ -29,6 +29,7 @@ public class VideoAdapter extends BaseAdapter
     private String userLanguage;
 
     private boolean streamHighQuality;
+    private boolean showIndicators;
     private boolean showCastIndicators;
 
     enum SortOrder
@@ -70,15 +71,31 @@ public class VideoAdapter extends BaseAdapter
     }
 
     /**
+     * Sets whether the indicators should show operations based on being connected
+     * to a server.
+     *
+     * @param show True, if the indicators should be shown
+     */
+    public void setShowIndicators( boolean show )
+    {
+        if ( show != showIndicators )
+        {
+            showIndicators = show;
+
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
      * Sets whether the cast indicators should be shown for videos that can be cast.
      *
-     * @param showCastIndicators True, if the indicators should be shown
+     * @param show True, if the indicators should be shown
      */
-    public void setShowCastIndicators( boolean showCastIndicators )
+    public void setShowCastIndicators( boolean show )
     {
-        if ( showCastIndicators != this.showCastIndicators )
+        if ( show != showCastIndicators )
         {
-            this.showCastIndicators = showCastIndicators;
+            showCastIndicators = show;
 
             notifyDataSetChanged();
         }
@@ -224,14 +241,14 @@ public class VideoAdapter extends BaseAdapter
         // Change visibility of icons
         ImageView icon = (ImageView) view.findViewById( R.id.stream );
         if ( icon != null )
-            icon.setVisibility( video.shouldStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
+            icon.setVisibility( showIndicators && video.shouldStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
 
         icon = (ImageView) view.findViewById( R.id.download );
         if ( icon != null )
-            icon.setVisibility( video.canDownload() ? View.VISIBLE : View.INVISIBLE );
+            icon.setVisibility( (showIndicators && video.canDownload()) || video.isDownloaded() ? View.VISIBLE : View.INVISIBLE );
 
         icon = (ImageView) view.findViewById( R.id.cast );
         if ( icon != null )
-            icon.setVisibility( showCastIndicators && video.canCast() ? View.VISIBLE : View.INVISIBLE );
+            icon.setVisibility( showIndicators && showCastIndicators && video.canCast() ? View.VISIBLE : View.INVISIBLE );
     }
 }
