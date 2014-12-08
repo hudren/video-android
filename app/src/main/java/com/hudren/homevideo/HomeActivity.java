@@ -36,7 +36,10 @@ import com.hudren.homevideo.model.Subtitle;
 import com.hudren.homevideo.model.Video;
 import com.hudren.homevideo.server.VideoServer;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.reflect.Type;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +60,8 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     private VideoCastManager castManager;
     private MiniController miniController;
     private CastConsumer castConsumer;
+
+    private int width;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -90,6 +95,12 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         }
 
         server = new VideoServer( this );
+
+        // Get movie viewing width
+        WindowManager windowManager = (WindowManager) getSystemService( Context.WINDOW_SERVICE );
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics( metrics );
+        width = Math.max( metrics.widthPixels, metrics.heightPixels );
     }
 
     public SharedPreferences getSharedPreferences()
@@ -287,23 +298,10 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
             boolean quality = prefs.getBoolean( "stream_highest_quality", false );
 
-            Container container;
-            if ( quality )
-                container = video.getStreaming( quality );
-
-            else
-            {
-                // Get movie viewing width
-                WindowManager windowManager = (WindowManager) getSystemService( Context.WINDOW_SERVICE );
-                DisplayMetrics metrics = new DisplayMetrics();
-                windowManager.getDefaultDisplay().getMetrics( metrics );
-                int width = Math.max( metrics.widthPixels, metrics.heightPixels );
-
-                container = video.getStreaming( width );
-            }
+            Container container = quality ? video.getStreaming( quality ) : video.getStreaming( width );
 
             Intent shareIntent = new Intent( Intent.ACTION_VIEW );
-            shareIntent.setDataAndType( Uri.parse( container.url ), container.mimetype );
+            shareIntent.setDataAndType( Uri.parse( downloadedUrl( container.url ) ), container.mimetype );
             shareIntent.putExtra( Intent.EXTRA_TITLE, video.title );
             startActivity( shareIntent );
         }
@@ -314,10 +312,38 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     }
 
     /**
+     * Returns the url of downloaded file if available, or the streaming url.
+     *
+     * @param url The streaming url
+     * @return The url to be used for playback
+     */
+    public String downloadedUrl( String url )
+    {
+        Uri uri = Uri.parse( url );
+        List< String > segments = uri.getPathSegments();
+        final String name = URLDecoder.decode( segments.get( segments.size() - 1 ) );
+
+        File dir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_MOVIES );
+        File[] movies = dir.listFiles( new FilenameFilter()
+        {
+            @Override
+            public boolean accept( File dir, String filename )
+            {
+                return filename.equals( name );
+            }
+        } );
+
+        if ( movies != null && movies.length > 0 )
+            return Uri.fromFile( movies[0] ).toString();
+
+        return url;
+    }
+
+    /**
      * Downloads a single file using the Download Manager.
      *
      * @param url      The file url
-     * @param title    The title visible in the Download Mangager
+     * @param title    The title visible in the Download Manager
      * @param mimetype The file mimetype
      * @param visible  Notification visibility during download
      * @return The download id
@@ -334,7 +360,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             request.setNotificationVisibility( DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION );
 
         List< String > segments = uri.getPathSegments();
-        String filename = segments.get( segments.size() - 1 );
+        String filename = URLDecoder.decode( segments.get( segments.size() - 1 ) );
         request.setDestinationInExternalPublicDir( Environment.DIRECTORY_MOVIES, filename );
 
         request.setTitle( title );
