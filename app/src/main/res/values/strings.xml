@@ -43,5 +43,6 @@
     <string name="sort_alphabetic">Alphabetically</string>
     <string name="sort_most_recent">Newest First</string>
     <string name="sort_oldest">Oldest First</string>
+    <string name="downloaded">Downloaded</string>
 
 </resources>

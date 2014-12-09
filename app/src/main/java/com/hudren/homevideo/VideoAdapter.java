@@ -239,16 +239,41 @@ public class VideoAdapter extends BaseAdapter
         text2.setText( details );
 
         // Change visibility of icons
-        ImageView icon = (ImageView) view.findViewById( R.id.stream );
-        if ( icon != null )
-            icon.setVisibility( showIndicators && video.shouldStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
+        if ( showIndicators )
+        {
+            TextView downloaded = (TextView) view.findViewById( R.id.downloaded );
+            if ( downloaded != null )
+                downloaded.setVisibility( View.INVISIBLE );
 
-        icon = (ImageView) view.findViewById( R.id.download );
-        if ( icon != null )
-            icon.setVisibility( (showIndicators && video.canDownload()) || video.isDownloaded() ? View.VISIBLE : View.INVISIBLE );
+            ImageView icon = (ImageView) view.findViewById( R.id.stream );
+            if ( icon != null )
+                icon.setVisibility( video.shouldStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
 
-        icon = (ImageView) view.findViewById( R.id.cast );
-        if ( icon != null )
-            icon.setVisibility( showIndicators && showCastIndicators && video.canCast() ? View.VISIBLE : View.INVISIBLE );
+            icon = (ImageView) view.findViewById( R.id.download );
+            if ( icon != null )
+                icon.setVisibility( video.canDownload() ? View.VISIBLE : View.INVISIBLE );
+
+            icon = (ImageView) view.findViewById( R.id.cast );
+            if ( icon != null )
+                icon.setVisibility( showCastIndicators && video.canCast() ? View.VISIBLE : View.INVISIBLE );
+        }
+        else
+        {
+            TextView downloaded = (TextView) view.findViewById( R.id.downloaded );
+            if ( downloaded != null )
+                downloaded.setVisibility( video.isDownloaded() ? View.VISIBLE : View.INVISIBLE );
+
+            ImageView icon = (ImageView) view.findViewById( R.id.stream );
+            if ( icon != null )
+                icon.setVisibility( View.INVISIBLE );
+
+            icon = (ImageView) view.findViewById( R.id.download );
+            if ( icon != null )
+                icon.setVisibility( View.INVISIBLE );
+
+            icon = (ImageView) view.findViewById( R.id.cast );
+            if ( icon != null )
+                icon.setVisibility( View.INVISIBLE );
+        }
     }
 }
