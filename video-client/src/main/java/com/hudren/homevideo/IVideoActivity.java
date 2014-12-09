@@ -13,7 +13,7 @@ public interface IVideoActivity
 
     void startStreaming( Video video );
 
-    void startDownloading( List< Video > videos );
+    void startDownloading( List<Video> videos );
 
     void startCasting( Video video );
 }

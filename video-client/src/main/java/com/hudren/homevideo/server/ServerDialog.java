@@ -19,7 +19,7 @@ public class ServerDialog extends DialogFragment implements DialogInterface.OnCl
     public static final String DATA = "servers";
 
     private VideoServer server;
-    private ArrayList< Server > servers;
+    private ArrayList<Server> servers;
 
     public void setServer( VideoServer server )
     {
@@ -33,7 +33,7 @@ public class ServerDialog extends DialogFragment implements DialogInterface.OnCl
         dialog.setTitle( R.string.pick_server );
 
         Bundle bundle = getArguments();
-        servers = (ArrayList< Server >) bundle.getSerializable( DATA );
+        servers = (ArrayList<Server>) bundle.getSerializable( DATA );
 
         // Display the server name
         CharSequence[] choices = new CharSequence[servers.size()];

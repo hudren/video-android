@@ -47,7 +47,7 @@ import java.util.List;
  */
 public class HomeActivity extends ActionBarActivity implements IVideoActivity
 {
-    @SuppressWarnings( "unused" )
+    @SuppressWarnings("unused")
     private static final String TAG = "HomeActivity";
 
     private static final double VOLUME_INCREMENT = 0.05;
@@ -149,11 +149,11 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     public void setVideos( String json )
     {
         Gson gson = new GsonBuilder().setFieldNamingPolicy( FieldNamingPolicy.LOWER_CASE_WITH_DASHES ).create();
-        Type collectionType = new TypeToken< ArrayList< Video > >()
+        Type collectionType = new TypeToken<ArrayList<Video>>()
         {
         }.getType();
 
-        List< Video > videos = gson.fromJson( json, collectionType );
+        List<Video> videos = gson.fromJson( json, collectionType );
         for ( Video video : videos )
         {
             // Sort the containers with highest priority first
@@ -384,7 +384,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         else
             request.setNotificationVisibility( DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION );
 
-        List< String > segments = uri.getPathSegments();
+        List<String> segments = uri.getPathSegments();
         String filename = URLDecoder.decode( segments.get( segments.size() - 1 ) );
         request.setDestinationInExternalPublicDir( Environment.DIRECTORY_MOVIES, filename );
 
@@ -421,7 +421,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
      *
      * @param videos The list of videos to download
      */
-    public void startDownloading( List< Video > videos )
+    public void startDownloading( List<Video> videos )
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
         boolean launch = prefs.getBoolean( "launch_downloads", false );
@@ -481,7 +481,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         // Subtitles
         long id = 1;
-        ArrayList< MediaTrack > tracks = new ArrayList< MediaTrack >();
+        ArrayList<MediaTrack> tracks = new ArrayList<MediaTrack>();
         if ( video.subtitles != null )
         {
             for ( Subtitle subtitle : video.subtitles )

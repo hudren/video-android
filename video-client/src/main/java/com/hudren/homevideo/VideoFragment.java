@@ -61,7 +61,7 @@ public class VideoFragment extends ListFragment
      *
      * @param videos The videos to be displayed
      */
-    public void setVideos( List< Video > videos )
+    public void setVideos( List<Video> videos )
     {
         adapter.setVideos( videos );
     }
@@ -129,14 +129,14 @@ public class VideoFragment extends ListFragment
      *
      * @return The list of videos, possibly empty
      */
-    public List< Video > getSelectedVideos()
+    public List<Video> getSelectedVideos()
     {
         ListView listView = getListView();
 
         int len = listView.getCount();
         SparseBooleanArray checked = listView.getCheckedItemPositions();
 
-        List< Video > videos = new ArrayList< Video >();
+        List<Video> videos = new ArrayList<Video>();
         for ( int i = 0; i < len; i++ )
             if ( checked.get( i ) )
                 videos.add( (Video) adapter.getItem( i ) );

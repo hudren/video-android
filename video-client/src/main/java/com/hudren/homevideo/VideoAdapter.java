@@ -39,7 +39,7 @@ public class VideoAdapter extends BaseAdapter
 
     private SortOrder order = SortOrder.MOST_RECENT;
 
-    private List< Video > videos = new ArrayList< Video >();
+    private List<Video> videos = new ArrayList<Video>();
 
     public VideoAdapter( Context context )
     {
@@ -56,7 +56,8 @@ public class VideoAdapter extends BaseAdapter
     }
 
     /**
-     * Sets whether the streaming indicator should indicate when lower quality streams are not available.
+     * Sets whether the streaming indicator should indicate when lower quality streams are not
+     * available.
      *
      * @param streamHighQuality True, if high bandwidth videos are stream-able
      */
@@ -71,8 +72,7 @@ public class VideoAdapter extends BaseAdapter
     }
 
     /**
-     * Sets whether the indicators should show operations based on being connected
-     * to a server.
+     * Sets whether the indicators should show operations based on being connected to a server.
      *
      * @param show True, if the indicators should be shown
      */
@@ -106,7 +106,7 @@ public class VideoAdapter extends BaseAdapter
      *
      * @param videos The list of views
      */
-    public void setVideos( List< Video > videos )
+    public void setVideos( List<Video> videos )
     {
         this.videos = videos;
 
@@ -131,7 +131,7 @@ public class VideoAdapter extends BaseAdapter
     {
         if ( order == SortOrder.ALPHABETICAL )
         {
-            Collections.sort( videos, new Comparator< Video >()
+            Collections.sort( videos, new Comparator<Video>()
             {
                 @Override
                 public int compare( Video lhs, Video rhs )
@@ -143,7 +143,7 @@ public class VideoAdapter extends BaseAdapter
         }
         else if ( order == SortOrder.MOST_RECENT )
         {
-            Collections.sort( videos, Collections.reverseOrder( new Comparator< Video >()
+            Collections.sort( videos, Collections.reverseOrder( new Comparator<Video>()
             {
                 @Override
                 public int compare( Video lhs, Video rhs )
@@ -155,7 +155,7 @@ public class VideoAdapter extends BaseAdapter
         }
         else if ( order == SortOrder.OLDEST )
         {
-            Collections.sort( videos, new Comparator< Video >()
+            Collections.sort( videos, new Comparator<Video>()
             {
                 @Override
                 public int compare( Video lhs, Video rhs )

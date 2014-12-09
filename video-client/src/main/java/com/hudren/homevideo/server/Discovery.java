@@ -20,8 +20,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
- * Performs server discovery, returning one or more servers that respond to a
- * broadcast event.
+ * Performs server discovery, returning one or more servers that respond to a broadcast event.
  */
 public class Discovery
 {
@@ -68,14 +67,14 @@ public class Discovery
     }
 
     /**
-     * Sends a broadcast message for discovering servers. Will listen for a response
-     * from multiple servers.
+     * Sends a broadcast message for discovering servers. Will listen for a response from multiple
+     * servers.
      *
      * @return A list of servers responding to the discovery broadcast
      */
-    private ArrayList< Server > broadcastDiscovery()
+    private ArrayList<Server> broadcastDiscovery()
     {
-        ArrayList< Server > response = new ArrayList< Server >();
+        ArrayList<Server> response = new ArrayList<Server>();
 
         String data = "DISCOVER_VIDEO_SERVER_REQUEST";
         DatagramSocket socket = null;
@@ -130,22 +129,22 @@ public class Discovery
 
 
     /**
-     * Async task to perform server discovery. Prompts the user to choose a server if more than
-     * one is found.
+     * Async task to perform server discovery. Prompts the user to choose a server if more than one
+     * is found.
      */
-    private class DiscoveryTask extends AsyncTask< Void, Void, ArrayList< Server > >
+    private class DiscoveryTask extends AsyncTask<Void, Void, ArrayList<Server>>
     {
 
         private boolean tried;
 
         @Override
-        protected ArrayList< Server > doInBackground( Void... params )
+        protected ArrayList<Server> doInBackground( Void... params )
         {
             return broadcastDiscovery();
         }
 
         @Override
-        protected void onPostExecute( ArrayList< Server > servers )
+        protected void onPostExecute( ArrayList<Server> servers )
         {
             if ( servers.size() == 1 )
             {

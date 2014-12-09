@@ -40,7 +40,7 @@ public class CastConsumer extends VideoCastConsumerImpl
      * @param title     The video title
      * @return The saved video position, or null if not found
      */
-    private static Position find( List< Position > positions, String title )
+    private static Position find( List<Position> positions, String title )
     {
         if ( positions != null )
         {
@@ -88,13 +88,13 @@ public class CastConsumer extends VideoCastConsumerImpl
      *
      * @return The list of saved positions
      */
-    private List< Position > getVideoPositions()
+    private List<Position> getVideoPositions()
     {
         SharedPreferences prefs = activity.getSharedPreferences();
         String positions = prefs.getString( "positions", "[]" );
 
         Gson gson = new Gson();
-        Type collectionType = new TypeToken< ArrayList< Position > >()
+        Type collectionType = new TypeToken<ArrayList<Position>>()
         {
         }.getType();
 
@@ -106,10 +106,10 @@ public class CastConsumer extends VideoCastConsumerImpl
      *
      * @param positions The list of positions to save
      */
-    private void saveVideoPositions( List< Position > positions )
+    private void saveVideoPositions( List<Position> positions )
     {
         Gson gson = new Gson();
-        Type collectionType = new TypeToken< ArrayList< Position > >()
+        Type collectionType = new TypeToken<ArrayList<Position>>()
         {
         }.getType();
 
@@ -125,7 +125,7 @@ public class CastConsumer extends VideoCastConsumerImpl
 
         if ( title != null && pos > 0 )
         {
-            List< Position > videoPositions = getVideoPositions();
+            List<Position> videoPositions = getVideoPositions();
             Position position = find( videoPositions, title );
             if ( position == null )
             {

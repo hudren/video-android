@@ -9,7 +9,7 @@ import android.util.Log;
 /**
  * Created by jeff on 11/17/14.
  */
-public class DownloadMonitor extends AsyncTask< Long, Void, Void >
+public class DownloadMonitor extends AsyncTask<Long, Void, Void>
 {
     @SuppressWarnings("unused")
     private final static String TAG = "DownloadMonitor";

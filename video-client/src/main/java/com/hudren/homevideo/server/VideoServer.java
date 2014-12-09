@@ -16,10 +16,9 @@ import com.hudren.homevideo.HomeActivity;
 import com.hudren.homevideo.model.Server;
 
 /**
- * Provides server discovery and connection. This class will first attempt
- * to connect to the last known server. If not successful, it will attempt
- * to discover a server on the local network. Either way, once connected,
- * it will load the current list of available videos from the server.
+ * Provides server discovery and connection. This class will first attempt to connect to the last
+ * known server. If not successful, it will attempt to discover a server on the local network.
+ * Either way, once connected, it will load the current list of available videos from the server.
  */
 public class VideoServer
 {
@@ -164,7 +163,7 @@ public class VideoServer
         return network != null && network.isConnected();
     }
 
-    private class HttpAsyncTask extends AsyncTask< String, Void, String >
+    private class HttpAsyncTask extends AsyncTask<String, Void, String>
     {
         private final String name;
 

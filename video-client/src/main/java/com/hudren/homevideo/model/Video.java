@@ -31,12 +31,12 @@ public class Video implements Serializable
 
     private boolean downloaded;
 
-    List< Container > containers = new ArrayList< Container >();
-    public List< Subtitle > subtitles = new ArrayList< Subtitle >();
+    List<Container> containers = new ArrayList<Container>();
+    public List<Subtitle> subtitles = new ArrayList<Subtitle>();
 
     public void rankContainers()
     {
-        Collections.sort( containers, Collections.reverseOrder( new Comparator< Container >()
+        Collections.sort( containers, Collections.reverseOrder( new Comparator<Container>()
         {
             @Override
             public int compare( Container lhs, Container rhs )
@@ -68,7 +68,7 @@ public class Video implements Serializable
         return FormatUtils.durationOf( duration );
     }
 
-    public List< Container > getContainers()
+    public List<Container> getContainers()
     {
         return containers;
     }
@@ -177,7 +177,7 @@ public class Video implements Serializable
     {
         if ( language == null )
         {
-            TreeSet< String > langs = new TreeSet< String >();
+            TreeSet<String> langs = new TreeSet<String>();
             for ( Container container : containers )
             {
                 if ( container.language != null )
@@ -225,7 +225,7 @@ public class Video implements Serializable
 
     public String getQuality()
     {
-        ArrayList< String > dimens = new ArrayList< String >();
+        ArrayList<String> dimens = new ArrayList<String>();
         for ( Container container : containers )
             if ( !dimens.contains( container.dimension ) )
                 dimens.add( container.dimension );
@@ -235,7 +235,7 @@ public class Video implements Serializable
 
     public String getVideoCodecs()
     {
-        ArrayList< String > codecs = new ArrayList< String >();
+        ArrayList<String> codecs = new ArrayList<String>();
         for ( Container container : containers )
             if ( !codecs.contains( container.video ) )
                 codecs.add( container.video );
@@ -245,7 +245,7 @@ public class Video implements Serializable
 
     public String getAudioCodecs()
     {
-        ArrayList< String > codecs = new ArrayList< String >();
+        ArrayList<String> codecs = new ArrayList<String>();
         for ( Container container : containers )
             if ( !codecs.contains( container.audio ) )
                 codecs.add( container.audio );
@@ -275,7 +275,7 @@ public class Video implements Serializable
         return getCasting() != null;
     }
 
-    private String join( String sep, Collection< ? > coll )
+    private String join( String sep, Collection<?> coll )
     {
         String text = "";
 
