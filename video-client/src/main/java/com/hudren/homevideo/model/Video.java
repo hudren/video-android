@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 /**
- * Represents a video that is displayed to the user. It may correspond to multiple
- * containers each representing a file for different encodings.
+ * Represents a video that is displayed to the user. It may correspond to multiple containers each
+ * representing a file for different encodings.
  */
 public class Video implements Serializable
 {
@@ -114,15 +114,30 @@ public class Video implements Serializable
         return container;
     }
 
+    /**
+     * Returns the smallest container for downloading.
+     *
+     * @return The container to download
+     */
     public Container getDownload()
     {
-        for ( Container container : containers )
-            if ( container.canDownload() )
-                return container;
+        // Find first downloadable container
+        int i = 0;
+        while ( i < containers.size() && !containers.get( i ).canDownload() )
+            i++;
 
-        return null;
+        // Find smaller container w/H.264
+        while ( i + 1 < containers.size() && containers.get( i + 1 ).hasH264() && containers.get( i + 1 ).size < containers.get( i ).size )
+            i++;
+
+        return i < containers.size() ? containers.get( i ) : null;
     }
 
+    /**
+     * Returns the highest quality container for casting.
+     *
+     * @return The container to cast
+     */
     public Container getCasting()
     {
         for ( Container container : containers )
