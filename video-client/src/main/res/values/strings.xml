@@ -44,5 +44,10 @@
     <string name="sort_most_recent">Newest First</string>
     <string name="sort_oldest">Oldest First</string>
     <string name="downloaded">Downloaded</string>
+    <!-- Update dialog -->
+    <string name="update_title">%1$s Update</string>
+    <string name="update_msg">Version %1$s is available. Would you like to download it now?</string>
+    <string name="download">Download</string>
+    <string name="no_download">Cancel</string>
 
 </resources>

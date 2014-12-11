@@ -63,6 +63,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     private CastConsumer castConsumer;
 
     private boolean connected;
+    private boolean checkUpdate = true;
     private int width;
 
     @Override
@@ -139,6 +140,12 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         setTitle( name );
         setVideos( json );
+
+        if ( checkUpdate )
+        {
+            server.checkUpdate();
+            checkUpdate = false;
+        }
     }
 
     /**
@@ -373,7 +380,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
      * @param visible  Notification visibility during download
      * @return The download id
      */
-    private long downloadFile( String url, String title, String mimetype, boolean visible )
+    public long downloadFile( String url, String title, String mimetype, boolean visible )
     {
         Uri uri = Uri.parse( url );
         DownloadManager.Request request = new DownloadManager.Request( uri );

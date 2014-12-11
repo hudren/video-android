@@ -1,7 +1,9 @@
 package com.hudren.homevideo.server;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,8 +14,14 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.hudren.homevideo.BuildConfig;
 import com.hudren.homevideo.HomeActivity;
+import com.hudren.homevideo.R;
 import com.hudren.homevideo.model.Server;
+import com.hudren.homevideo.model.Version;
 
 /**
  * Provides server discovery and connection. This class will first attempt to connect to the last
@@ -31,6 +39,7 @@ public class VideoServer
     private String network;
     private String name;
     private String url;
+    private int versionCode;
 
     public VideoServer( HomeActivity activity )
     {
@@ -57,6 +66,7 @@ public class VideoServer
         network = prefs.getString( "NETWORK_NAME", null );
         name = prefs.getString( "SERVER_NAME", null );
         url = prefs.getString( "SERVER_URL", null );
+        versionCode = prefs.getInt( "CLIENT_VERSION", 0 );
     }
 
     /**
@@ -69,6 +79,7 @@ public class VideoServer
         prefs.putString( "NETWORK_NAME", network );
         prefs.putString( "SERVER_NAME", name );
         prefs.putString( "SERVER_URL", url );
+        prefs.putInt( "CLIENT_VERSION", versionCode );
 
         prefs.apply();
     }
@@ -99,7 +110,7 @@ public class VideoServer
         Toast.makeText( activity, "Connecting to server " + server, Toast.LENGTH_SHORT ).show();
 
         Log.d( TAG, "url = " + url );
-        new HttpAsyncTask( name ).execute( getVideosUrl() );
+        new GetVideosTask( name ).execute( getVideosUrl() );
     }
 
     /**
@@ -113,13 +124,23 @@ public class VideoServer
                 discoverServer();
 
             else
-                new HttpAsyncTask( name ).execute( getVideosUrl() );
+                new GetVideosTask( name ).execute( getVideosUrl() );
         }
     }
 
     private String getVideosUrl()
     {
         return url + "/api/v1/videos";
+    }
+
+    private String getUpdateUrl()
+    {
+        return url + "/api/v1/android";
+    }
+
+    private String getAppUrl( String filename )
+    {
+        return url + "/" + filename;
     }
 
     /**
@@ -131,6 +152,14 @@ public class VideoServer
             discovery = new Discovery( this, activity );
 
         discovery.performDiscovery();
+    }
+
+    /**
+     * Queries the server to check for an update to this app.
+     */
+    public void checkUpdate()
+    {
+        new CheckUpdateTask().execute( getUpdateUrl() );
     }
 
     /**
@@ -163,11 +192,11 @@ public class VideoServer
         return network != null && network.isConnected();
     }
 
-    private class HttpAsyncTask extends AsyncTask<String, Void, String>
+    private class GetVideosTask extends AsyncTask<String, Void, String>
     {
         private final String name;
 
-        private HttpAsyncTask( String name )
+        private GetVideosTask( String name )
         {
             this.name = name;
         }
@@ -188,6 +217,62 @@ public class VideoServer
             else
             {
                 discoverServer();
+            }
+        }
+    }
+
+    private class DownloadUpdate implements DialogInterface.OnClickListener
+    {
+        String title;
+        String filename;
+
+        public DownloadUpdate( String filename, String title )
+        {
+            this.title = title;
+            this.filename = filename;
+        }
+
+        @Override
+        public void onClick( DialogInterface dialog, int which )
+        {
+            activity.downloadFile( getAppUrl( filename ), title, "application/vnd.android.package-archive", true );
+        }
+    }
+
+    private class CheckUpdateTask extends AsyncTask<String, Void, String>
+    {
+        @Override
+        protected String doInBackground( String... urls )
+        {
+            return HttpUtil.GET( urls[0] );
+        }
+
+        @Override
+        protected void onPostExecute( String json )
+        {
+            Gson gson = new GsonBuilder().setFieldNamingPolicy( FieldNamingPolicy.LOWER_CASE_WITH_DASHES ).create();
+            Version version = gson.fromJson( json, Version.class );
+
+            if ( !BuildConfig.DEBUG
+                    && BuildConfig.APPLICATION_ID.equals( version.packageName ) // same app
+                    && Build.VERSION.SDK_INT >= version.minSdkVersion           // can run on this device
+                    && version.versionCode > BuildConfig.VERSION_CODE           // is a newer version
+                    && version.versionCode > versionCode )                      // haven't prompted the user
+            {
+                String title = activity.getString( R.string.update_title, version.label );
+                String msg = activity.getString( R.string.update_msg, version.versionName );
+
+                new AlertDialog.Builder( activity )
+                        .setTitle( title )
+                        .setMessage( msg )
+                        .setPositiveButton( R.string.download, new DownloadUpdate( version.filename, version.label ) )
+                        .setNegativeButton( R.string.no_download, null )
+                        .create()
+                        .show();
+
+                // Record version to only prompt once
+                versionCode = version.versionCode;
+                savePrefs();
             }
         }
     }
