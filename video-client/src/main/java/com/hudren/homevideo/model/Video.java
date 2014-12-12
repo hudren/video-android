@@ -41,12 +41,8 @@ public class Video implements Serializable
             @Override
             public int compare( Container lhs, Container rhs )
             {
-                // H.264 for hardware decoding
-                int comp = Boolean.valueOf( lhs.hasH264() ).compareTo( rhs.hasH264() );
-
                 // Most resolution
-                if ( comp == 0 )
-                    comp = Integer.valueOf( lhs.width ).compareTo( rhs.width );
+                int comp = Integer.valueOf( lhs.width ).compareTo( rhs.width );
 
                 // File size
                 if ( comp == 0 )
@@ -86,7 +82,7 @@ public class Video implements Serializable
         if ( !highest_quality )
         {
             int i = 1;
-            while ( i < containers.size() && container.bitrate > HIGH_QUALITY_BITRATE )
+            while ( i < containers.size() && (container.bitrate > HIGH_QUALITY_BITRATE || !container.hasH264()) )
                 container = containers.get( i++ );
         }
 
@@ -104,7 +100,7 @@ public class Video implements Serializable
         Container container = containers.get( 0 );
 
         int i = 1;
-        while ( i < containers.size() && container.bitrate > HIGH_QUALITY_BITRATE )
+        while ( i < containers.size() && (container.bitrate > HIGH_QUALITY_BITRATE || !container.hasH264()) )
             container = containers.get( i++ );
 
         // Look for next video greater than or equal to desired width
