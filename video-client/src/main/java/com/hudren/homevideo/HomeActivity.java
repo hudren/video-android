@@ -63,7 +63,6 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     private CastConsumer castConsumer;
 
     private boolean connected;
-    private boolean checkUpdate = true;
     private int width;
 
     @Override
@@ -141,11 +140,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         setTitle( name );
         setVideos( json );
 
-        if ( checkUpdate )
-        {
-            server.checkUpdate();
-            checkUpdate = false;
-        }
+        server.checkUpdate();
     }
 
     /**
