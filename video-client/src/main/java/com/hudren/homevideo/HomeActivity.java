@@ -462,10 +462,10 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         MediaMetadata metadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
         metadata.putString( MediaMetadata.KEY_TITLE, video.title );
 
-        if ( video.poster != null )
+        if ( video.poster != null || video.thumb != null )
         {
-            metadata.addImage( new WebImage( Uri.parse( video.poster ) ) );
-            metadata.addImage( new WebImage( Uri.parse( video.poster ) ) );
+            metadata.addImage( new WebImage( Uri.parse( video.thumb != null ? video.thumb : video.poster ) ) );
+            metadata.addImage( new WebImage( Uri.parse( video.poster != null ? video.poster : video.thumb ) ) );
         }
 
         // TV series

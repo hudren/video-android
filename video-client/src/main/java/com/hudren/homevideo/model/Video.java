@@ -28,6 +28,7 @@ public class Video implements Serializable
 
     public String language;
     public String poster;
+    public String thumb;
 
     private boolean downloaded;
 
