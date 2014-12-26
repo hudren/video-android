@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.hudren.homevideo.model.Video;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Locale;
 public class VideoAdapter extends BaseAdapter
 {
     private final LayoutInflater inflater;
+    private final ImageLoader imageLoader;
 
     private boolean more;
     private String userLanguage;
@@ -44,6 +47,7 @@ public class VideoAdapter extends BaseAdapter
     public VideoAdapter( Context context )
     {
         inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        imageLoader = NetworkManager.getInstance( context ).getImageLoader();
 
         // Display more details?
         WindowManager windowManager = (WindowManager) context.getSystemService( Context.WINDOW_SERVICE );
@@ -274,6 +278,13 @@ public class VideoAdapter extends BaseAdapter
             icon = (ImageView) view.findViewById( R.id.cast );
             if ( icon != null )
                 icon.setVisibility( View.INVISIBLE );
+        }
+
+        if ( video.poster != null )
+        {
+            NetworkImageView image = (NetworkImageView) view.findViewById( R.id.poster );
+            if ( image != null )
+                image.setImageUrl( video.poster, imageLoader );
         }
     }
 }
