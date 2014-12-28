@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.hudren.homevideo.model.Info;
 import com.hudren.homevideo.model.Video;
 
 import java.util.ArrayList;
@@ -210,10 +211,11 @@ public class VideoAdapter extends BaseAdapter
     private void bindView( int position, View view )
     {
         Video video = (Video) getItem( position );
+        Info info = video.info;
 
         // Main text
         TextView text1 = (TextView) view.findViewById( android.R.id.text1 );
-        String title = video.title;
+        String title = info != null && info.title != null ? info.title : video.title;
         if ( video.episode > 0 )
             title += " - Episode " + video.episode;
 

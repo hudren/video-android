@@ -30,6 +30,8 @@ public class Video implements Serializable
     public String poster;
     public String thumb;
 
+    public Info info;
+
     private boolean downloaded;
 
     List<Container> containers = new ArrayList<Container>();
