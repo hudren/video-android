@@ -141,7 +141,7 @@ public class VideoAdapter extends BaseAdapter
                 @Override
                 public int compare( Video lhs, Video rhs )
                 {
-                    return lhs.getTitle().compareTo( rhs.getTitle() );
+                    return lhs.getSortingTitle().compareTo( rhs.getSortingTitle() );
                 }
 
             } );
@@ -282,11 +282,8 @@ public class VideoAdapter extends BaseAdapter
                 icon.setVisibility( View.INVISIBLE );
         }
 
-        if ( video.poster != null )
-        {
-            NetworkImageView image = (NetworkImageView) view.findViewById( R.id.poster );
-            if ( image != null )
-                image.setImageUrl( video.poster, imageLoader );
-        }
+        NetworkImageView image = (NetworkImageView) view.findViewById( R.id.poster );
+        if ( image != null )
+            image.setImageUrl( video.poster, imageLoader );
     }
 }

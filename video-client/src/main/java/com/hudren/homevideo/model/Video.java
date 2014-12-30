@@ -20,6 +20,7 @@ public class Video implements Serializable
     public static final int HIGH_QUALITY_BITRATE = 10000000;
 
     public String title;
+    public String sorting;
     public double duration;
 
     public int season;
@@ -61,6 +62,8 @@ public class Video implements Serializable
     {
         return title;
     }
+
+    public String getSortingTitle() { return sorting != null ? sorting : title; }
 
     public String getDuration()
     {
