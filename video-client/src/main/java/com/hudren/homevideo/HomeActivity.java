@@ -369,13 +369,14 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     /**
      * Downloads a single file using the Download Manager.
      *
-     * @param url      The file url
-     * @param title    The title visible in the Download Manager
-     * @param mimetype The file mimetype
-     * @param visible  Notification visibility during download
+     * @param url         The file url
+     * @param title       The title visible in the Download Manager
+     * @param mimetype    The file mimetype
+     * @param destination The destination directory
+     * @param visible     Notification visibility during download
      * @return The download id
      */
-    public long downloadFile( String url, String title, String mimetype, boolean visible )
+    public long downloadFile( String url, String title, String mimetype, String destination, boolean visible )
     {
         Uri uri = Uri.parse( url );
         DownloadManager.Request request = new DownloadManager.Request( uri );
@@ -388,7 +389,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         List<String> segments = uri.getPathSegments();
         String filename = URLDecoder.decode( segments.get( segments.size() - 1 ) );
-        request.setDestinationInExternalPublicDir( Environment.DIRECTORY_MOVIES, filename );
+        request.setDestinationInExternalPublicDir( destination, filename );
 
         request.setTitle( title );
         request.setMimeType( mimetype );
@@ -409,13 +410,13 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     {
         // Download video file
         Container container = video.getDownload();
-        long id = downloadFile( container.url, video.title, container.mimetype, visible );
+        long id = downloadFile( container.url, video.title, container.mimetype, Environment.DIRECTORY_MOVIES, visible );
         new DownloadMonitor( this ).execute( id );
 
         // Download external subtitle files
         if ( video.subtitles != null )
             for ( Subtitle subtitle : video.subtitles )
-                downloadFile( subtitle.url, video.title + " " + subtitle.title + " subtitles", subtitle.mimetype, visible );
+                downloadFile( subtitle.url, video.title + " " + subtitle.title + " subtitles", subtitle.mimetype, Environment.DIRECTORY_MOVIES, visible );
     }
 
     /**

@@ -11,6 +11,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -235,7 +236,7 @@ public class VideoServer
         @Override
         public void onClick( DialogInterface dialog, int which )
         {
-            activity.downloadFile( getAppUrl( filename ), title, "application/vnd.android.package-archive", true );
+            activity.downloadFile( getAppUrl( filename ), title, "application/vnd.android.package-archive", Environment.DIRECTORY_DOWNLOADS, true );
         }
     }
 
