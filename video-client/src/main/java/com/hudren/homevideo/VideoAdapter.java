@@ -132,6 +132,15 @@ public class VideoAdapter extends BaseAdapter
         }
     }
 
+    private int compareInt( int n1, int n2 )
+    {
+        if ( n1 == n2 )
+            return 0;
+        if ( n1 < n2 )
+            return -1;
+        return 1;
+    }
+
     private void sortVideos()
     {
         if ( order == SortOrder.ALPHABETICAL )
@@ -141,7 +150,12 @@ public class VideoAdapter extends BaseAdapter
                 @Override
                 public int compare( Video lhs, Video rhs )
                 {
-                    return lhs.getSortingTitle().compareTo( rhs.getSortingTitle() );
+                    int c = lhs.getSortingTitle().compareTo( rhs.getSortingTitle() );
+                    if ( c == 0 )
+                        c = compareInt( lhs.season, rhs.season );
+                    if ( c == 0 )
+                        c = compareInt( lhs.episode, rhs.episode );
+                    return c;
                 }
 
             } );
