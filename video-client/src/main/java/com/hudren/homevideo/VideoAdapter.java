@@ -231,7 +231,12 @@ public class VideoAdapter extends BaseAdapter
         TextView text1 = (TextView) view.findViewById( android.R.id.text1 );
         String title = info != null && info.title != null ? info.title : video.title;
         if ( video.episode > 0 )
-            title += " - Episode " + video.episode;
+        {
+            if ( video.season > 0 )
+                title += " - Episode " + video.episode;
+            else
+                title += " - Part " + video.episode;
+        }
 
         text1.setText( title );
 
