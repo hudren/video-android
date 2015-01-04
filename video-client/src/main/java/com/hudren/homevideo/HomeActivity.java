@@ -356,7 +356,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             {
                 Intent shareIntent = new Intent( Intent.ACTION_VIEW );
                 shareIntent.setDataAndType( Uri.parse( url ), container.mimetype );
-                shareIntent.putExtra( Intent.EXTRA_TITLE, video.title );
+                shareIntent.putExtra( Intent.EXTRA_TITLE, video.getFullTitle() );
                 startActivity( shareIntent );
             }
         }
@@ -410,13 +410,13 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
     {
         // Download video file
         Container container = video.getDownload();
-        long id = downloadFile( container.url, video.title, container.mimetype, Environment.DIRECTORY_MOVIES, visible );
+        long id = downloadFile( container.url, video.getFullTitle(), container.mimetype, Environment.DIRECTORY_MOVIES, visible );
         new DownloadMonitor( this ).execute( id );
 
         // Download external subtitle files
         if ( video.subtitles != null )
             for ( Subtitle subtitle : video.subtitles )
-                downloadFile( subtitle.url, video.title + " " + subtitle.title + " subtitles", subtitle.mimetype, Environment.DIRECTORY_MOVIES, visible );
+                downloadFile( subtitle.url, video.getFullTitle() + " " + subtitle.title + " subtitles", subtitle.mimetype, Environment.DIRECTORY_MOVIES, visible );
     }
 
     /**
@@ -461,7 +461,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
         Container container = video.getCasting();
 
         MediaMetadata metadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
-        metadata.putString( MediaMetadata.KEY_TITLE, video.title );
+        metadata.putString( MediaMetadata.KEY_TITLE, video.getFullTitle() );
 
         if ( video.poster != null || video.thumb != null )
         {
@@ -475,11 +475,6 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             metadata.putString( MediaMetadata.KEY_SERIES_TITLE, video.title );
             metadata.putInt( MediaMetadata.KEY_SEASON_NUMBER, video.season );
             metadata.putInt( MediaMetadata.KEY_EPISODE_NUMBER, video.episode );
-
-            if ( video.episodeTitle != null )
-                metadata.putString( MediaMetadata.KEY_SUBTITLE, String.format( "%d.%d %s", video.season, video.episode, video.episodeTitle ) );
-            else
-                metadata.putString( MediaMetadata.KEY_SUBTITLE, String.format( "Season %d - Episode %d", video.season, video.episode ) );
         }
 
         // Subtitles

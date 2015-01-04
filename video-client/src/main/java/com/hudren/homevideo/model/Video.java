@@ -63,7 +63,50 @@ public class Video implements Serializable
         return title;
     }
 
-    public String getSortingTitle() { return sorting != null ? sorting : title; }
+    public String getSortingTitle()
+    {
+        return sorting != null ? sorting : title;
+    }
+
+    public String getSubtitle( boolean more )
+    {
+        String text = "";
+
+        if ( episode > 0 )
+        {
+            if ( season > 0 )
+            {
+                if ( more && episodeTitle != null )
+                    text += season + "." + episode + " " + episodeTitle;
+                else
+                    text += "S" + season + " E" + episode;
+            }
+            else
+            {
+                if ( more && episodeTitle != null )
+                    text += episode + ". " + episodeTitle;
+                else
+                    text += "Part " + episode;
+            }
+        }
+
+        return text;
+    }
+
+    public String getFullTitle( boolean more )
+    {
+        String text = info != null && info.title != null ? info.title : title;
+
+        if ( episode > 0 )
+            text += " - " + getSubtitle( more );
+
+        return text;
+    }
+
+    public String getFullTitle()
+    {
+        return getFullTitle( true );
+    }
 
     public String getDuration()
     {
