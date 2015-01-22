@@ -15,6 +15,11 @@ import java.util.TreeSet;
 public class Video implements Serializable
 {
     /**
+     * The bitrate used to determine unplayable videos.
+     */
+    public static final int UNPLAYABLE_BITRATE = 50000000;
+
+    /**
      * The bitrate used to determine for high bandwidth videos.
      */
     public static final int HIGH_QUALITY_BITRATE = 10000000;
@@ -38,6 +43,17 @@ public class Video implements Serializable
     List<Container> containers = new ArrayList<Container>();
     public List<Subtitle> subtitles = new ArrayList<Subtitle>();
 
+    private Integer typeRank( String mimetype )
+    {
+        if ( "video/mp4".equals( mimetype ) )
+            return Integer.valueOf( 1 );
+
+        if ( "video/x-matroska".equals( mimetype ) )
+            return Integer.valueOf( 2 );
+
+        return Integer.valueOf( 3 );
+    }
+
     public void rankContainers()
     {
         Collections.sort( containers, Collections.reverseOrder( new Comparator<Container>()
@@ -47,6 +63,10 @@ public class Video implements Serializable
             {
                 // Most resolution
                 int comp = Integer.valueOf( lhs.width ).compareTo( rhs.width );
+
+                // Container format
+                if ( comp == 0 )
+                    comp = typeRank( lhs.mimetype ).compareTo( typeRank( rhs.mimetype ) );
 
                 // File size
                 if ( comp == 0 )
@@ -128,7 +148,13 @@ public class Video implements Serializable
     {
         Container container = containers.get( 0 );
 
-        if ( !highest_quality )
+        if ( highest_quality )
+        {
+            int i = 1;
+            while ( i < containers.size() && container.bitrate > UNPLAYABLE_BITRATE )
+                container = containers.get( i++ );
+        }
+        else
         {
             int i = 1;
             while ( i < containers.size() && (container.bitrate > HIGH_QUALITY_BITRATE || !container.hasH264()) )
@@ -185,8 +211,14 @@ public class Video implements Serializable
      */
     public Container getCasting()
     {
+        // Prefer lower bitrate for casting
         for ( Container container : containers )
-            if ( container.canCast() )
+            if ( container.canCast() && container.bitrate < HIGH_QUALITY_BITRATE )
+                return container;
+
+        // Try playable videos
+        for ( Container container : containers )
+            if ( container.canCast() && container.bitrate < UNPLAYABLE_BITRATE )
                 return container;
 
         return null;
