@@ -17,6 +17,12 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="stream_web_compatible"
+        android:title="@string/pref_stream_web">
+    </CheckBoxPreference>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:key="launch_downloads"
         android:title="@string/pref_launch_downloads">
     </CheckBoxPreference>

@@ -39,6 +39,7 @@
     <string name="captions">Captions</string>
     <string name="pref_sort_videos">Sort Videos</string>
     <string name="pref_stream_highest">Stream Highest Quality</string>
+    <string name="pref_stream_web">Prefer Web Compatible</string>
     <string name="pref_launch_downloads">Launch Downloads</string>
     <string name="sort_alphabetic">Alphabetically</string>
     <string name="sort_most_recent">Newest First</string>

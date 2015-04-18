@@ -144,14 +144,14 @@ public class Video implements Serializable
      * @param highest_quality True, if there are no bandwidth or performance restrictions
      * @return The container to be used for streaming
      */
-    public Container getStreaming( boolean highest_quality )
+    public Container getStreaming( boolean highest_quality, boolean web_compatible )
     {
         Container container = containers.get( 0 );
 
         if ( highest_quality )
         {
             int i = 1;
-            while ( i < containers.size() && container.bitrate > UNPLAYABLE_BITRATE )
+            while ( i < containers.size() && container.bitrate > UNPLAYABLE_BITRATE || (web_compatible && !container.hasH264()) )
                 container = containers.get( i++ );
         }
         else
@@ -339,7 +339,7 @@ public class Video implements Serializable
 
     public boolean shouldStream( boolean streamHighQuality )
     {
-        return streamHighQuality || getStreaming( false ).bitrate < HIGH_QUALITY_BITRATE;
+        return streamHighQuality || getStreaming( false, false ).bitrate < HIGH_QUALITY_BITRATE;
     }
 
     public boolean canDownload()
