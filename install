@@ -1,0 +1,3 @@
+#!/bin/bash
+
+adb install -r video-client/build/outputs/apk/video-client-release.apk
