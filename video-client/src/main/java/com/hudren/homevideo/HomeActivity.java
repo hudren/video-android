@@ -338,7 +338,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
             // Get user preference for highest quality
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
             boolean quality = prefs.getBoolean( "stream_highest_quality", false );
-            boolean web = prefs.getBoolean( "stream_web_compatible", false );
+            boolean web = prefs.getBoolean( "stream_h264", false );
 
             // Find the best container
             Container container;
