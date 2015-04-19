@@ -17,8 +17,8 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="stream_web_compatible"
-        android:title="@string/pref_stream_web">
+        android:key="stream_h264"
+        android:title="@string/pref_stream_h264">
     </CheckBoxPreference>
 
     <CheckBoxPreference

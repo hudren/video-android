@@ -142,16 +142,17 @@ public class Video implements Serializable
      * Returns the best video for streaming based on quality.
      *
      * @param highest_quality True, if there are no bandwidth or performance restrictions
+     * @param compatible True, prefer H.264 for hardware decoding
      * @return The container to be used for streaming
      */
-    public Container getStreaming( boolean highest_quality, boolean web_compatible )
+    public Container getStreaming( boolean highest_quality, boolean compatible )
     {
         Container container = containers.get( 0 );
 
         if ( highest_quality )
         {
             int i = 1;
-            while ( i < containers.size() && container.bitrate > UNPLAYABLE_BITRATE || (web_compatible && !container.hasH264()) )
+            while ( i < containers.size() && container.bitrate > UNPLAYABLE_BITRATE || (compatible && !container.hasH264()) )
                 container = containers.get( i++ );
         }
         else
