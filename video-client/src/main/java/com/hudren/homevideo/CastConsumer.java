@@ -8,8 +8,8 @@ import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.hudren.homevideo.model.Position;
 
 import java.lang.reflect.Type;
@@ -115,7 +115,7 @@ public class CastConsumer extends VideoCastConsumerImpl
 
         SharedPreferences.Editor editor = activity.getSharedPreferences().edit();
         editor.putString( "positions", gson.toJson( positions, collectionType ) );
-        editor.commit();
+        editor.apply();
     }
 
     private void saveMediaPosition( MediaInfo mediaInfo, long pos )
@@ -178,7 +178,7 @@ public class CastConsumer extends VideoCastConsumerImpl
         {
             SharedPreferences.Editor editor = activity.getSharedPreferences().edit();
             editor.putFloat( "volume", (float) castManager.getVolume() );
-            editor.commit();
+            editor.apply();
         }
         catch ( Exception e )
         {

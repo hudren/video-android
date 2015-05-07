@@ -40,18 +40,18 @@ public class Video implements Serializable
 
     private boolean downloaded;
 
-    List<Container> containers = new ArrayList<Container>();
-    public List<Subtitle> subtitles = new ArrayList<Subtitle>();
+    List<Container> containers = new ArrayList<>();
+    public List<Subtitle> subtitles = new ArrayList<>();
 
     private Integer typeRank( String mimetype )
     {
         if ( "video/mp4".equals( mimetype ) )
-            return Integer.valueOf( 1 );
+            return 1;
 
         if ( "video/x-matroska".equals( mimetype ) )
-            return Integer.valueOf( 2 );
+            return 2;
 
-        return Integer.valueOf( 3 );
+        return 3;
     }
 
     public void rankContainers()
@@ -255,7 +255,7 @@ public class Video implements Serializable
     {
         if ( language == null )
         {
-            TreeSet<String> langs = new TreeSet<String>();
+            TreeSet<String> langs = new TreeSet<>();
             for ( Container container : containers )
             {
                 if ( container.language != null )
@@ -303,7 +303,7 @@ public class Video implements Serializable
 
     public String getQuality()
     {
-        ArrayList<String> dimens = new ArrayList<String>();
+        ArrayList<String> dimens = new ArrayList<>();
         for ( Container container : containers )
             if ( !dimens.contains( container.dimension ) )
                 dimens.add( container.dimension );
@@ -313,7 +313,7 @@ public class Video implements Serializable
 
     public String getVideoCodecs()
     {
-        ArrayList<String> codecs = new ArrayList<String>();
+        ArrayList<String> codecs = new ArrayList<>();
         for ( Container container : containers )
             if ( !codecs.contains( container.video ) )
                 codecs.add( container.video );
@@ -323,7 +323,7 @@ public class Video implements Serializable
 
     public String getAudioCodecs()
     {
-        ArrayList<String> codecs = new ArrayList<String>();
+        ArrayList<String> codecs = new ArrayList<>();
         for ( Container container : containers )
             if ( !codecs.contains( container.audio ) )
                 codecs.add( container.audio );

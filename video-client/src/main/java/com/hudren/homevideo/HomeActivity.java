@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,8 +29,8 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.google.sample.castcompanionlibrary.cast.VideoCastManager;
-import com.google.sample.castcompanionlibrary.widgets.MiniController;
+import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.hudren.homevideo.model.Container;
 import com.hudren.homevideo.model.Subtitle;
 import com.hudren.homevideo.model.Video;
@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Main activity used to browse videos.
  */
-public class HomeActivity extends ActionBarActivity implements IVideoActivity
+public class HomeActivity extends AppCompatActivity implements IVideoActivity
 {
     @SuppressWarnings("unused")
     private static final String TAG = "HomeActivity";
@@ -86,8 +86,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         if ( castAvailable )
         {
-            castManager = VideoApp.getVideoCastManager( this );
-            castManager.reconnectSessionIfPossible( this, true );
+            castManager = VideoApp.init( this );
 
             miniController = (MiniController) findViewById( R.id.miniController1 );
             castManager.addMiniController( miniController );
@@ -182,7 +181,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         if ( castManager != null )
         {
-            castManager = VideoApp.getVideoCastManager( this );
+            castManager = VideoCastManager.getInstance();
             castManager.incrementUiCounter();
 
             // HACK: device availability callbacks are not reliable
@@ -480,7 +479,7 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         // Subtitles
         long id = 1;
-        ArrayList<MediaTrack> tracks = new ArrayList<MediaTrack>();
+        ArrayList<MediaTrack> tracks = new ArrayList<>();
         if ( video.subtitles != null )
         {
             for ( Subtitle subtitle : video.subtitles )
@@ -512,6 +511,6 @@ public class HomeActivity extends ActionBarActivity implements IVideoActivity
 
         // Start new media at saved position
         long pos = castConsumer.getMediaPosition( mediaInfo );
-        castManager.startCastControllerActivity( this, mediaInfo, (int) pos, true );
+        castManager.startVideoCastControllerActivity( this, mediaInfo, (int) pos, true );
     }
 }

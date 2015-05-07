@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -34,7 +35,7 @@ public class VideoFragment extends ListFragment
     private VideoAdapter adapter;
 
     @Override
-    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
+    public View onCreateView( @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
         View rootView = inflater.inflate( R.layout.fragment_video, container, false );
 
@@ -136,7 +137,7 @@ public class VideoFragment extends ListFragment
         int len = listView.getCount();
         SparseBooleanArray checked = listView.getCheckedItemPositions();
 
-        List<Video> videos = new ArrayList<Video>();
+        List<Video> videos = new ArrayList<>();
         for ( int i = 0; i < len; i++ )
             if ( checked.get( i ) )
                 videos.add( (Video) adapter.getItem( i ) );

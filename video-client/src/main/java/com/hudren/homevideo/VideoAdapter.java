@@ -37,12 +37,12 @@ public class VideoAdapter extends BaseAdapter
 
     enum SortOrder
     {
-        ALPHABETICAL, MOST_RECENT, OLDEST;
+        ALPHABETICAL, MOST_RECENT, OLDEST
     }
 
     private SortOrder order = SortOrder.MOST_RECENT;
 
-    private List<Video> videos = new ArrayList<Video>();
+    private List<Video> videos = new ArrayList<>();
 
     public VideoAdapter( Context context )
     {

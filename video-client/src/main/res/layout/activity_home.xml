@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:layout_weight="2"/>
 
-    <com.google.sample.castcompanionlibrary.widgets.MiniController
+    <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
         android:id="@+id/miniController1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
