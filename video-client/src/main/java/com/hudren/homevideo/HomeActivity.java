@@ -87,6 +87,7 @@ public class HomeActivity extends AppCompatActivity implements IVideoActivity
         if ( castAvailable )
         {
             castManager = VideoApp.init( this );
+            castManager.reconnectSessionIfPossible();
 
             miniController = (MiniController) findViewById( R.id.miniController1 );
             castManager.addMiniController( miniController );
