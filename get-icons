@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Copies icons from the Material Design icon pack into the current project.
+#
+# Arg1: collection name, i.e. action
+# Arg2: icon name, i.e. ic_settings_white_24dp
+#
+
+SOURCE=~/Downloads/material-design-icons-1.0.1
+
+function get {
+  cp $SOURCE/$2/drawable-$1/$3.png video-client/src/main/res/drawable-$1
+}
+
+if [ ! -f "$SOURCE/$1/drawable-mdpi/$2.png" ]; then
+  echo "Could not find icon"
+  exit 1
+fi
+
+if [ ! -d "video-client" ]; then
+  echo "This script must be run from a project directory"
+  exit 1
+fi
+
+get mdpi $1 $2
+get hdpi $1 $2
+get xhdpi $1 $2
+get xxhdpi $1 $2
+get xxxhdpi $1 $2
+

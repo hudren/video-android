@@ -25,7 +25,6 @@ public class Video implements Serializable
     public static final int HIGH_QUALITY_BITRATE = 10000000;
 
     public String title;
-    public String sorting;
     public double duration;
 
     public int season;
@@ -33,15 +32,11 @@ public class Video implements Serializable
     public String episodeTitle;
 
     public String language;
-    public String poster;
-    public String thumb;
-
-    public Info info;
 
     private boolean downloaded;
 
-    List<Container> containers = new ArrayList<>();
-    public List<Subtitle> subtitles = new ArrayList<>();
+    List<Container> containers = Collections.emptyList();
+    public List<Subtitle> subtitles = Collections.emptyList();
 
     private Integer typeRank( String mimetype )
     {
@@ -83,11 +78,6 @@ public class Video implements Serializable
         return title;
     }
 
-    public String getSortingTitle()
-    {
-        return sorting != null ? sorting : title;
-    }
-
     public String getSubtitle( boolean more )
     {
         String text = "";
@@ -115,7 +105,7 @@ public class Video implements Serializable
 
     public String getFullTitle( boolean more )
     {
-        String text = info != null && info.title != null ? info.title : title;
+        String text = title;
 
         if ( episode > 0 )
             text += " - " + getSubtitle( more );
@@ -288,7 +278,6 @@ public class Video implements Serializable
 
         return modified;
     }
-
 
     public long getModified()
     {

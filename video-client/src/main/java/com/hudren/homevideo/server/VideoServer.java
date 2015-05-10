@@ -88,7 +88,8 @@ public class VideoServer
     /**
      * Saves the server information for the specified
      *
-     * @param url
+     * @param name The server name
+     * @param url The server url
      */
     public void saveServer( String name, String url )
     {
@@ -111,13 +112,13 @@ public class VideoServer
         Toast.makeText( activity, "Connecting to server " + server, Toast.LENGTH_SHORT ).show();
 
         Log.d( TAG, "url = " + url );
-        new GetVideosTask( name ).execute( getVideosUrl() );
+        new GetVideosTask( name ).execute( getTitlesUrl() );
     }
 
     /**
      * Gets a list of videos from the server
      */
-    public void getVideos()
+    public void getTitles()
     {
         if ( isConnected() )
         {
@@ -125,13 +126,13 @@ public class VideoServer
                 discoverServer();
 
             else
-                new GetVideosTask( name ).execute( getVideosUrl() );
+                new GetVideosTask( name ).execute( getTitlesUrl() );
         }
     }
 
-    private String getVideosUrl()
+    private String getTitlesUrl()
     {
-        return url + "/api/v1/videos";
+        return url + "/api/v1/titles";
     }
 
     private String getUpdateUrl()
@@ -213,7 +214,7 @@ public class VideoServer
         {
             if ( result != null && result.length() > 0 )
             {
-                activity.saveVideos( name, result );
+                activity.saveTitles( name, result );
             }
             else
             {

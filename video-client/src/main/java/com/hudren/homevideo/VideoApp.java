@@ -3,6 +3,7 @@ package com.hudren.homevideo;
 import android.app.Application;
 import android.content.Context;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 
 /**
@@ -11,6 +12,18 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 public class VideoApp extends Application
 {
     private static final String APPLICATION_ID = "F2714565";
+
+    private static boolean connected;
+
+    private static ImageLoader imageLoader;
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+
+        imageLoader = NetworkManager.getInstance( this ).getImageLoader();
+    }
 
     /**
      * Initializes the VideoCastManager using the specified context.
@@ -31,4 +44,19 @@ public class VideoApp extends Application
         return castManager;
     }
 
+    public static boolean isConnected()
+    {
+        // TODO: ping server to make sure connection is still alive?
+        return connected;
+    }
+
+    public static void setConnected( boolean connected )
+    {
+        VideoApp.connected = connected;
+    }
+
+    public static ImageLoader getImageLoader()
+    {
+        return imageLoader;
+    }
 }

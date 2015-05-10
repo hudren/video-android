@@ -10,8 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.hudren.homevideo.model.Info;
+import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 
 import java.util.ArrayList;
@@ -21,12 +22,11 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Adapter used for displaying the videos in a list.
+ * Adapter used for displaying the titles in a list.
  */
-public class VideoAdapter extends BaseAdapter
+public class TitlesAdapter extends BaseAdapter
 {
     private final LayoutInflater inflater;
-    private final ImageLoader imageLoader;
 
     private boolean more;
     private String userLanguage;
@@ -42,12 +42,11 @@ public class VideoAdapter extends BaseAdapter
 
     private SortOrder order = SortOrder.MOST_RECENT;
 
-    private List<Video> videos = new ArrayList<>();
+    private List<Title> titles = new ArrayList<>();
 
-    public VideoAdapter( Context context )
+    public TitlesAdapter( Context context )
     {
         inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        imageLoader = NetworkManager.getInstance( context ).getImageLoader();
 
         // Display more details?
         WindowManager windowManager = (WindowManager) context.getSystemService( Context.WINDOW_SERVICE );
@@ -63,7 +62,7 @@ public class VideoAdapter extends BaseAdapter
      * Sets whether the streaming indicator should indicate when lower quality streams are not
      * available.
      *
-     * @param streamHighQuality True, if high bandwidth videos are stream-able
+     * @param streamHighQuality True, if high bandwidth titles are stream-able
      */
     public void setHighQualityStreaming( boolean streamHighQuality )
     {
@@ -91,7 +90,7 @@ public class VideoAdapter extends BaseAdapter
     }
 
     /**
-     * Sets whether the cast indicators should be shown for videos that can be cast.
+     * Sets whether the cast indicators should be shown for titles that can be cast.
      *
      * @param show True, if the indicators should be shown
      */
@@ -106,15 +105,15 @@ public class VideoAdapter extends BaseAdapter
     }
 
     /**
-     * Sets the videos to be displayed in the list.
+     * Sets the titles to be displayed in the list.
      *
-     * @param videos The list of views
+     * @param titles The list of views
      */
-    public void setVideos( List<Video> videos )
+    public void setTitles( List<Title> titles )
     {
-        this.videos = videos;
+        this.titles = titles;
 
-        sortVideos();
+        sortTitles();
 
         notifyDataSetChanged();
     }
@@ -125,46 +124,32 @@ public class VideoAdapter extends BaseAdapter
         {
             this.order = order;
 
-            sortVideos();
+            sortTitles();
 
             notifyDataSetChanged();
         }
     }
 
-    private int compareInt( int n1, int n2 )
-    {
-        if ( n1 == n2 )
-            return 0;
-        if ( n1 < n2 )
-            return -1;
-        return 1;
-    }
-
-    private void sortVideos()
+    private void sortTitles()
     {
         if ( order == SortOrder.ALPHABETICAL )
         {
-            Collections.sort( videos, new Comparator<Video>()
+            Collections.sort( titles, new Comparator<Title>()
             {
                 @Override
-                public int compare( Video lhs, Video rhs )
+                public int compare( Title lhs, Title rhs )
                 {
-                    int c = lhs.getSortingTitle().compareTo( rhs.getSortingTitle() );
-                    if ( c == 0 )
-                        c = compareInt( lhs.season, rhs.season );
-                    if ( c == 0 )
-                        c = compareInt( lhs.episode, rhs.episode );
-                    return c;
+                    return lhs.getSortingTitle().compareTo( rhs.getSortingTitle() );
                 }
 
             } );
         }
         else if ( order == SortOrder.MOST_RECENT )
         {
-            Collections.sort( videos, Collections.reverseOrder( new Comparator<Video>()
+            Collections.sort( titles, Collections.reverseOrder( new Comparator<Title>()
             {
                 @Override
-                public int compare( Video lhs, Video rhs )
+                public int compare( Title lhs, Title rhs )
                 {
                     return Long.valueOf( lhs.getModified() ).compareTo( rhs.getModified() );
                 }
@@ -173,10 +158,10 @@ public class VideoAdapter extends BaseAdapter
         }
         else if ( order == SortOrder.OLDEST )
         {
-            Collections.sort( videos, new Comparator<Video>()
+            Collections.sort( titles, new Comparator<Title>()
             {
                 @Override
-                public int compare( Video lhs, Video rhs )
+                public int compare( Title lhs, Title rhs )
                 {
                     return Long.valueOf( lhs.getModified() ).compareTo( rhs.getModified() );
                 }
@@ -188,13 +173,13 @@ public class VideoAdapter extends BaseAdapter
     @Override
     public int getCount()
     {
-        return videos.size();
+        return titles.size();
     }
 
     @Override
     public Object getItem( int position )
     {
-        return videos.get( position );
+        return titles.get( position );
     }
 
     @Override
@@ -223,16 +208,18 @@ public class VideoAdapter extends BaseAdapter
      */
     private void bindView( int position, View view )
     {
-        Video video = (Video) getItem( position );
+        Title title = (Title) getItem( position );
+        Video video = title.getVideo();
+        Info info = title.info;
 
         // Main text
         TextView text1 = (TextView) view.findViewById( android.R.id.text1 );
-        text1.setText( video.getFullTitle( more ) );
+        text1.setText( title.getTitle() );
 
         // Subtext
         TextView text2 = (TextView) view.findViewById( android.R.id.text2 );
 
-        String details = video.getDuration();
+        String details = info.runtime;
         details += "    " + video.getQuality();
         String language = video.getLanguage();
 
@@ -292,6 +279,6 @@ public class VideoAdapter extends BaseAdapter
 
         NetworkImageView image = (NetworkImageView) view.findViewById( R.id.poster );
         if ( image != null )
-            image.setImageUrl( video.poster, imageLoader );
+            image.setImageUrl( title.poster, VideoApp.getImageLoader() );
     }
 }

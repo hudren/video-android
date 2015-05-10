@@ -1,5 +1,6 @@
 package com.hudren.homevideo;
 
+import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 
 import java.util.List;
@@ -11,9 +12,11 @@ public interface IVideoActivity
 {
     boolean canCast();
 
-    void startStreaming( Video video );
+    void play( Title title, Video video );
+
+    void startStreaming( Title title, Video video );
 
     void startDownloading( List<Video> videos );
 
-    void startCasting( Video video );
+    void startCasting( Title title, Video video );
 }

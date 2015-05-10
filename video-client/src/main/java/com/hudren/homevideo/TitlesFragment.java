@@ -1,6 +1,7 @@
 package com.hudren.homevideo;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,10 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.hudren.homevideo.model.Container;
 import com.hudren.homevideo.model.FormatUtils;
+import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 
 import java.io.File;
@@ -30,16 +31,16 @@ import java.util.List;
 /**
  * Implements a ListView to display and interact with videos.
  */
-public class VideoFragment extends ListFragment
+public class TitlesFragment extends ListFragment implements IVideoFragment
 {
-    private VideoAdapter adapter;
+    private TitlesAdapter adapter;
 
     @Override
     public View onCreateView( @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
         View rootView = inflater.inflate( R.layout.fragment_video, container, false );
 
-        adapter = new VideoAdapter( getActivity() );
+        adapter = new TitlesAdapter( getActivity() );
         setListAdapter( adapter );
 
         onPreferencesChanged();
@@ -60,11 +61,11 @@ public class VideoFragment extends ListFragment
     /**
      * Displays the videos.
      *
-     * @param videos The videos to be displayed
+     * @param titles The titles to be displayed
      */
-    public void setVideos( List<Video> videos )
+    public void setTitles( List<Title> titles )
     {
-        adapter.setVideos( videos );
+        adapter.setTitles( titles );
     }
 
     /**
@@ -77,7 +78,7 @@ public class VideoFragment extends ListFragment
         adapter.setHighQualityStreaming( prefs.getBoolean( "stream_highest_quality", false ) );
 
         String order = prefs.getString( "sort_videos", "MOST_RECENT" );
-        adapter.setSortOrder( VideoAdapter.SortOrder.valueOf( order ) );
+        adapter.setSortOrder( TitlesAdapter.SortOrder.valueOf( order ) );
     }
 
     /**
@@ -111,18 +112,21 @@ public class VideoFragment extends ListFragment
     @Override
     public void onListItemClick( ListView list, View view, int position, long id )
     {
-        Video video = (Video) adapter.getItem( position );
+        Title title = (Title) adapter.getItem( position );
+        Video video = title.getVideo();
 
-        IVideoActivity activity = (IVideoActivity) getActivity();
-        if ( activity.canCast() )
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( getActivity() );
+        if ( video != null && prefs.getBoolean( "quick_play", false ) )
         {
-            if ( video.canCast() )
-                activity.startCasting( video );
-            else
-                Toast.makeText( getActivity(), "Cannot cast " + video.title, Toast.LENGTH_LONG ).show();
+            IVideoActivity activity = (IVideoActivity) getActivity();
+            activity.play( title, video );
         }
         else
-            activity.startStreaming( video );
+        {
+            Intent intent = new Intent( "com.hudren.homevideo.VIEW_TITLE" );
+            intent.putExtra( "title", title );
+            startActivity( intent );
+        }
     }
 
     /**
@@ -139,8 +143,16 @@ public class VideoFragment extends ListFragment
 
         List<Video> videos = new ArrayList<>();
         for ( int i = 0; i < len; i++ )
+        {
             if ( checked.get( i ) )
-                videos.add( (Video) adapter.getItem( i ) );
+            {
+                Title title = (Title) adapter.getItem( i );
+
+                // Only provide action for titles with a single video
+                if ( title.videos.size() == 1 )
+                    videos.add( title.videos.get( 0 ) );
+            }
+        }
 
         return videos;
     }
@@ -155,19 +167,24 @@ public class VideoFragment extends ListFragment
         @Override
         public void onItemCheckedStateChanged( ActionMode mode, int position, long id, boolean checked )
         {
-            Video video = (Video) adapter.getItem( position );
-            Container container = video.getDownload();
-            if ( container != null )
-            {
-                if ( checked )
-                    downloadSize += container.size;
-                else
-                    downloadSize -= container.size;
+            Title title = (Title) adapter.getItem( position );
+            Video video = title.getVideo();
 
-                if ( downloadSize > 0 )
-                    mode.setTitle( FormatUtils.sizeOf( downloadSize ) + " of " + FormatUtils.sizeOf( availableSize() ) + " available" );
-                else
-                    mode.setTitle( null );
+            if ( video != null )
+            {
+                Container container = video.getDownload();
+                if ( container != null )
+                {
+                    if ( checked )
+                        downloadSize += container.size;
+                    else
+                        downloadSize -= container.size;
+
+                    if ( downloadSize > 0 )
+                        mode.setTitle( FormatUtils.sizeOf( downloadSize ) + " of " + FormatUtils.sizeOf( availableSize() ) + " available" );
+                    else
+                        mode.setTitle( null );
+                }
             }
         }
 

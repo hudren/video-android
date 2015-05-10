@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".Home">
+
+    <item
+        android:id="@+id/media_route_menu_item"
+        android:title="@string/media_route_menu_title"
+        app:actionProviderClass="android.support.v7.app.MediaRouteActionProvider"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_play"
+        android:icon="@drawable/ic_play_arrow_white_24dp"
+        android:title="@string/action_refresh"
+        app:showAsAction="always"/>
+
+</menu>

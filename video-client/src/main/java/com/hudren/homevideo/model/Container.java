@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class Container implements Serializable
 {
     public String filename;
+    public String filetype;
     public String language;
     public long size;
     public long bitrate;

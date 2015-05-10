@@ -6,10 +6,10 @@ import android.util.Log;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hudren.homevideo.model.Position;
 
 import java.lang.reflect.Type;
@@ -17,17 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jeff on 11/17/14.
+ * Monitors the current video being casted.
  */
 public class CastConsumer extends VideoCastConsumerImpl
 {
     @SuppressWarnings("unused")
     private static final String TAG = "CastConsumer";
 
-    private final HomeActivity activity;
+    private final VideoActivity activity;
     private final VideoCastManager castManager;
 
-    public CastConsumer( HomeActivity activity, VideoCastManager castManager )
+    public CastConsumer( VideoActivity activity, VideoCastManager castManager )
     {
         this.activity = activity;
         this.castManager = castManager;
