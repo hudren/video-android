@@ -1,3 +1,12 @@
 #!/bin/bash
 
-adb install -r video-client/build/outputs/apk/video-client-release.apk
+adb install -r video-client/build/outputs/apk/video-client-release.apk | egrep "Success"
+let result=$?
+
+if (( result != 0 )); then
+  echo Uninstalling existing app:
+  adb uninstall com.hudren.homevideo
+
+  echo Re-attempting install:
+  adb install -r video-client/build/outputs/apk/video-client-release.apk
+fi
