@@ -3,20 +3,12 @@ package com.hudren.homevideo;
 import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 
-import java.util.List;
-
 /**
- * Actions for interacting with videos.
+ * Created by jeff on 5/11/15.
  */
 public interface IVideoActivity
 {
-    boolean canCast();
+    Title getVideoTitle();
 
-    void play( Title title, Video video );
-
-    void startStreaming( Title title, Video video );
-
-    void startDownloading( List<Video> videos );
-
-    void startCasting( Title title, Video video );
+    void onVideoSelected( Video video );
 }

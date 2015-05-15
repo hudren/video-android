@@ -4,7 +4,7 @@
     <style name="Theme.Application" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#D32F2F</item>
         <item name="colorPrimaryDark">#B71C1C</item>
-        <item name="colorAccent">#00B0FF</item>
+        <item name="colorAccent">#40C4FF</item>
     </style>
 
     <style name="Theme.Settings" parent="@style/Theme.Application">
@@ -17,6 +17,12 @@
     <style name="Widget.Toolbar" parent="@style/Widget.AppCompat.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="navigationIcon">?attr/homeAsUpIndicator</item>
+    </style>
+
+    <style name="normalEpisode" parent="@android:style/TextAppearance.Medium"/>
+
+    <style name="selectedEpisode" parent="normalEpisode">
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

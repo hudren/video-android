@@ -4,23 +4,25 @@
             android:layout_height="wrap_content">
 
     <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical">
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp">
 
         <TextView
             android:id="@+id/plot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:textSize="18sp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:id="@+id/year"
@@ -34,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="18sp"/>
 
@@ -42,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="18sp"/>
 
@@ -51,8 +55,6 @@
             android:id="@+id/subjects"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:textSize="18sp"/>
 
@@ -60,8 +62,6 @@
             android:id="@+id/genres"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:textSize="18sp"/>
 
@@ -69,8 +69,6 @@
             android:id="@+id/directors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:textSize="18sp"/>
 
@@ -78,8 +76,6 @@
             android:id="@+id/cast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:textSize="18sp"/>
 
@@ -87,17 +83,33 @@
             android:id="@+id/languages"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:textSize="18sp"/>
 
         <TableLayout
             android:id="@+id/containers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
 
-        </TableLayout>
+        <TextView
+            android:id="@+id/season"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <Spinner
+            android:id="@+id/seasons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+
+        <ListView
+            android:id="@+id/episodes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
 
     </LinearLayout>
 

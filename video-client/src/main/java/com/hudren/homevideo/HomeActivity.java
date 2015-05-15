@@ -1,11 +1,11 @@
 package com.hudren.homevideo;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,14 +24,16 @@ import java.util.List;
 /**
  * Main activity used to browse videos.
  */
-public class HomeActivity extends VideoActivity
+public class HomeActivity
+        extends VideoActivity
+        implements ITitleActivity, IVideoActivity
 {
-    @SuppressWarnings("unused")
     private static final String TAG = "HomeActivity";
 
-    TitlesFragment fragment;
-
     private VideoServer server;
+
+    private Title title;
+    private Video video;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -41,16 +43,18 @@ public class HomeActivity extends VideoActivity
         PreferenceManager.setDefaultValues( this, R.xml.preferences, false );
 
         setContentView( R.layout.activity_home );
+        initCasting();
 
-        if ( fragment == null )
-        {
-            fragment = new TitlesFragment();
-
-            FragmentManager manager = getFragmentManager();
-            manager.beginTransaction().add( R.id.container, fragment ).commit();
-        }
+        TitleFragment titleFragment = (TitleFragment) getFragmentManager().findFragmentById( R.id.title );
+        TitlesFragment titlesFragment = (TitlesFragment) getFragmentManager().findFragmentById( R.id.titles );
+        titlesFragment.setMultipane( titleFragment != null );
 
         server = new VideoServer( this );
+    }
+
+    protected Fragment getVideoFragment()
+    {
+        return getFragmentManager().findFragmentById( R.id.titles );
     }
 
     /**
@@ -78,17 +82,24 @@ public class HomeActivity extends VideoActivity
         editor.apply();
 
         VideoApp.setConnected( true );
-        fragment.setConnected( true );
 
-        setTitle( name );
+        TitlesFragment titlesFragment = (TitlesFragment) getFragmentManager().findFragmentById( R.id.titles );
+        if ( titlesFragment != null )
+            titlesFragment.setConnected( true );
+
+        if ( title == null )
+        {
+            TitleFragment titleFragment = (TitleFragment) getFragmentManager().findFragmentById( R.id.title );
+            if ( titleFragment != null )
+                titleFragment.showTitle( title );
+
+            setTitle( name );
+        }
+
         setTitles( json );
+        invalidateOptionsMenu();
 
         server.checkUpdate();
-    }
-
-    protected Fragment getVideoFragment()
-    {
-        return fragment;
     }
 
     /**
@@ -103,19 +114,39 @@ public class HomeActivity extends VideoActivity
         {
         }.getType();
 
-        List<Title> titles = gson.fromJson( json, collectionType );
-        for ( Title title : titles )
+        try
         {
-            for ( Video video : title.videos )
+            Log.d( TAG, "parsing titles" );
+            List<Title> titles = gson.fromJson( json, collectionType );
+
+            Log.d( TAG, "ranking titles" );
+            if ( titles != null )
             {
-                // Sort the containers with highest priority first
-                video.rankContainers();
+                for ( Title title : titles )
+                {
+                    title.rankVideos();
 
-                video.setDownloaded( downloadedContainer( video ) != null );
+                    if ( title.videos != null )
+                    {
+                        for ( Video video : title.videos )
+                        {
+                            // Sort the containers with highest priority first
+                            video.rankContainers();
+
+                            video.setDownloaded( downloadedContainer( video ) != null );
+                        }
+                    }
+                }
             }
-        }
 
-        fragment.setTitles( titles );
+            Log.d( TAG, "setting titles" );
+            TitlesFragment titlesFragment = (TitlesFragment) getFragmentManager().findFragmentById( R.id.titles );
+            titlesFragment.setTitles( titles );
+        }
+        catch ( Exception e )
+        {
+            Log.e( TAG, "error parsing json", e );
+        }
     }
 
     @Override
@@ -123,7 +154,9 @@ public class HomeActivity extends VideoActivity
     {
         super.onStart();
 
-        retrieveTitles();
+        TitlesFragment titlesFragment = (TitlesFragment) getFragmentManager().findFragmentById( R.id.titles );
+        if ( !titlesFragment.hasTitles() )
+            retrieveTitles();
     }
 
     @Override
@@ -149,13 +182,46 @@ public class HomeActivity extends VideoActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu( Menu menu )
+    {
+        MenuItem item = menu.findItem( R.id.action_play );
+        if ( item != null )
+            item.setVisible( title != null );
+
+        item = menu.findItem( R.id.action_download );
+        if ( item != null )
+            item.setVisible( title != null );
+
+        return super.onPrepareOptionsMenu( menu );
+    }
+
+    @Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
         int id = item.getItemId();
 
         switch ( id )
         {
+        case R.id.action_play:
+            if ( title != null )
+                play( title, video );
+
+            return true;
+
+        case R.id.action_download:
+            if ( title != null )
+            {
+                List<Video> videos = new ArrayList<>();
+                videos.add( video );
+
+                startDownloading( videos );
+            }
+            return true;
+
         case R.id.action_refresh:
+            title = null;
+            video = null;
+
             server.discoverServer();
             return true;
 
@@ -177,7 +243,51 @@ public class HomeActivity extends VideoActivity
     {
         // Settings
         if ( requestCode == 1 )
-            fragment.onPreferencesChanged();
+        {
+            TitlesFragment titlesFragment = (TitlesFragment) getFragmentManager().findFragmentById( R.id.titles );
+            titlesFragment.onPreferencesChanged();
+        }
     }
 
+    @Override
+    public Title getVideoTitle()
+    {
+        return title;
+    }
+
+    @Override
+    public void onVideoSelected( Video video )
+    {
+        this.video = video;
+
+        setTitle( title.getFullTitle( video ) );
+    }
+
+    @Override
+    public void onTitleSelected( Title title )
+    {
+        this.title = title;
+        invalidateOptionsMenu();
+
+        if ( findViewById( R.id.title ) != null )
+        {
+            TitleFragment titleFragment = (TitleFragment) getFragmentManager().findFragmentById( R.id.title );
+            titleFragment.showTitle( title );
+        }
+        else
+        {
+            Video video = title.getVideo();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
+
+            if ( video != null && (title.info == null || prefs.getBoolean( "quick_play", false )) )
+                play( title, video );
+
+            else
+            {
+                Intent intent = new Intent( "com.hudren.homevideo.VIEW_TITLE" );
+                intent.putExtra( "title", title );
+                startActivity( intent );
+            }
+        }
+    }
 }

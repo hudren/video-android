@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Override cast compatibility library -->
+    <dimen name="ccl_pageview_width">480dp</dimen>
+</resources>

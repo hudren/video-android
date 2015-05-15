@@ -27,8 +27,8 @@ public class Video implements Serializable
     public String title;
     public double duration;
 
-    public int season;
-    public int episode;
+    public Integer season;
+    public Integer episode;
     public String episodeTitle;
 
     public String language;
@@ -82,9 +82,9 @@ public class Video implements Serializable
     {
         String text = "";
 
-        if ( episode > 0 )
+        if ( episode != null )
         {
-            if ( season > 0 )
+            if ( season != null )
             {
                 if ( more && episodeTitle != null )
                     text += season + "." + episode + " " + episodeTitle;
@@ -103,19 +103,14 @@ public class Video implements Serializable
         return text;
     }
 
-    public String getFullTitle( boolean more )
+    public String getFullTitle()
     {
         String text = title;
 
-        if ( episode > 0 )
-            text += " - " + getSubtitle( more );
+        if ( episode != null )
+            text += " - " + getSubtitle( true );
 
         return text;
-    }
-
-    public String getFullTitle()
-    {
-        return getFullTitle( true );
     }
 
     public String getDuration()

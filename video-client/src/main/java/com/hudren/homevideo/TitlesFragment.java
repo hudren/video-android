@@ -1,13 +1,12 @@
 package com.hudren.homevideo;
 
+import android.app.Activity;
 import android.app.ListFragment;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -34,13 +33,14 @@ import java.util.List;
 public class TitlesFragment extends ListFragment implements IVideoFragment
 {
     private TitlesAdapter adapter;
+    private boolean multipane;
 
     @Override
-    public View onCreateView( @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
+    public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState )
     {
-        View rootView = inflater.inflate( R.layout.fragment_video, container, false );
+        View rootView = inflater.inflate( R.layout.fragment_titles, container, false );
 
-        adapter = new TitlesAdapter( getActivity() );
+        adapter = new TitlesAdapter( getActivity(), !multipane );
         setListAdapter( adapter );
 
         onPreferencesChanged();
@@ -54,8 +54,24 @@ public class TitlesFragment extends ListFragment implements IVideoFragment
         super.onActivityCreated( savedInstanceState );
 
         ListView view = getListView();
-        view.setChoiceMode( ListView.CHOICE_MODE_MULTIPLE_MODAL );
-        view.setMultiChoiceModeListener( new ActionModeListener() );
+        if ( multipane )
+            view.setChoiceMode( ListView.CHOICE_MODE_NONE );
+
+        else
+        {
+            view.setChoiceMode( ListView.CHOICE_MODE_MULTIPLE_MODAL );
+            view.setMultiChoiceModeListener( new ActionModeListener() );
+        }
+    }
+
+    /**
+     * Sets whether the fragment is displayed in a multipane view.
+     *
+     * @param multipane True, if displayed alongside another view
+     */
+    public void setMultipane( boolean multipane )
+    {
+        this.multipane = multipane;
     }
 
     /**
@@ -66,6 +82,11 @@ public class TitlesFragment extends ListFragment implements IVideoFragment
     public void setTitles( List<Title> titles )
     {
         adapter.setTitles( titles );
+    }
+
+    public boolean hasTitles()
+    {
+        return adapter.getCount() > 0;
     }
 
     /**
@@ -113,20 +134,10 @@ public class TitlesFragment extends ListFragment implements IVideoFragment
     public void onListItemClick( ListView list, View view, int position, long id )
     {
         Title title = (Title) adapter.getItem( position );
-        Video video = title.getVideo();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( getActivity() );
-        if ( video != null && prefs.getBoolean( "quick_play", false ) )
-        {
-            IVideoActivity activity = (IVideoActivity) getActivity();
-            activity.play( title, video );
-        }
-        else
-        {
-            Intent intent = new Intent( "com.hudren.homevideo.VIEW_TITLE" );
-            intent.putExtra( "title", title );
-            startActivity( intent );
-        }
+        Activity activity = getActivity();
+        if ( activity instanceof ITitleActivity )
+            ((ITitleActivity) activity).onTitleSelected( title );
     }
 
     /**
@@ -193,6 +204,7 @@ public class TitlesFragment extends ListFragment implements IVideoFragment
         {
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate( R.menu.action, menu );
+
             return true;
         }
 
@@ -208,7 +220,7 @@ public class TitlesFragment extends ListFragment implements IVideoFragment
             switch ( item.getItemId() )
             {
             case R.id.action_download:
-                IVideoActivity activity = (IVideoActivity) getActivity();
+                IPlaybackActivity activity = (IPlaybackActivity) getActivity();
                 activity.startDownloading( getSelectedVideos() );
 
                 mode.finish();

@@ -89,7 +89,7 @@ public class VideoServer
      * Saves the server information for the specified
      *
      * @param name The server name
-     * @param url The server url
+     * @param url  The server url
      */
     public void saveServer( String name, String url )
     {

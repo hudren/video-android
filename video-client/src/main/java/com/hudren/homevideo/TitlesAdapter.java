@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.hudren.homevideo.model.Info;
+import com.hudren.homevideo.model.Season;
 import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 
@@ -28,7 +29,6 @@ public class TitlesAdapter extends BaseAdapter
 {
     private final LayoutInflater inflater;
 
-    private boolean more;
     private String userLanguage;
 
     private boolean streamHighQuality;
@@ -44,16 +44,9 @@ public class TitlesAdapter extends BaseAdapter
 
     private List<Title> titles = new ArrayList<>();
 
-    public TitlesAdapter( Context context )
+    public TitlesAdapter( Context context, boolean detailed )
     {
         inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-
-        // Display more details?
-        WindowManager windowManager = (WindowManager) context.getSystemService( Context.WINDOW_SERVICE );
-        DisplayMetrics metrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics( metrics );
-
-        more = metrics.widthPixels / metrics.density > 420;
 
         userLanguage = Locale.getDefault().getDisplayLanguage();
     }
@@ -219,22 +212,32 @@ public class TitlesAdapter extends BaseAdapter
         // Subtext
         TextView text2 = (TextView) view.findViewById( android.R.id.text2 );
 
-        String details = info.runtime;
-        details += "    " + video.getQuality();
-        String language = video.getLanguage();
-
-        if ( language != null && language.length() > 0 && !language.equals( userLanguage ) )
-            details += "    " + language;
-
-        if ( more )
+        String details = "";
+        if ( video != null )
         {
-            String videoCodecs = video.getVideoCodecs();
-            if ( !"H.264".equals( videoCodecs ) )
-                details += "    " + videoCodecs;
+            details += info.year;
 
-            String download = video.getDownloadSize();
-            if ( download != null && download.length() > 0 )
-                details += "    " + video.getDownloadSize();
+            String language = video.getLanguage();
+            if ( language != null && language.length() > 0 && !language.equals( userLanguage ) )
+                details += "    " + language;
+
+            if (info.rated != null && info.rated.length() > 0)
+                details += "    " + info.rated;
+
+            if (info.runtime != null && info.runtime.length() > 0)
+                details += "    " + info.runtime;
+        }
+        else
+        {
+            List<Season> seasons = title.getSeasons();
+            int count = seasons.size();
+            if ( count == 1 )
+                details = count + " Season";
+            else if ( count > 1 )
+                details = count + " Seasons";
+
+            if (info.rated != null)
+                details += "    " + info.rated;
         }
 
         text2.setText( details );
@@ -248,21 +251,21 @@ public class TitlesAdapter extends BaseAdapter
 
             ImageView icon = (ImageView) view.findViewById( R.id.stream );
             if ( icon != null )
-                icon.setVisibility( video.shouldStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
+                icon.setVisibility( video != null && video.shouldStream( streamHighQuality ) ? View.VISIBLE : View.INVISIBLE );
 
             icon = (ImageView) view.findViewById( R.id.download );
             if ( icon != null )
-                icon.setVisibility( video.canDownload() ? View.VISIBLE : View.INVISIBLE );
+                icon.setVisibility( video != null && video.canDownload() ? View.VISIBLE : View.INVISIBLE );
 
             icon = (ImageView) view.findViewById( R.id.cast );
             if ( icon != null )
-                icon.setVisibility( showCastIndicators && video.canCast() ? View.VISIBLE : View.INVISIBLE );
+                icon.setVisibility( showCastIndicators && video != null && video.canCast() ? View.VISIBLE : View.INVISIBLE );
         }
         else
         {
             TextView downloaded = (TextView) view.findViewById( R.id.downloaded );
             if ( downloaded != null )
-                downloaded.setVisibility( video.isDownloaded() ? View.VISIBLE : View.INVISIBLE );
+                downloaded.setVisibility( video != null && video.isDownloaded() ? View.VISIBLE : View.INVISIBLE );
 
             ImageView icon = (ImageView) view.findViewById( R.id.stream );
             if ( icon != null )

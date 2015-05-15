@@ -17,9 +17,31 @@
         app:showAsAction="always"/>
 
     <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        android:title="@string/action_refresh"/>
+
+    <!--
+    <item
+        android:id="@+id/action_discover"
+        android:showAsAction="never"
+        android:title="@string/action_discover"/>
+        -->
+
+    <item
         android:id="@+id/action_download"
         android:icon="@drawable/ic_file_download_white_24dp"
         android:title="@string/action_download"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_downloads"
+        android:title="@string/action_downloads"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
         app:showAsAction="never"/>
 
 </menu>

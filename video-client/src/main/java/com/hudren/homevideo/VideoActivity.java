@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * Base class for activities that play videos.
  */
-public abstract class VideoActivity extends AppCompatActivity implements IVideoActivity
+public abstract class VideoActivity extends AppCompatActivity implements IPlaybackActivity
 {
     private static final String TAG = "HomeActivity";
     private static final double VOLUME_INCREMENT = 0.05;
@@ -58,25 +58,29 @@ public abstract class VideoActivity extends AppCompatActivity implements IVideoA
     {
         super.onCreate( savedInstanceState );
 
-        boolean castAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable( this ) == ConnectionResult.SUCCESS;
-
-        if ( castAvailable )
-        {
-            castManager = VideoApp.init( this );
-            castManager.reconnectSessionIfPossible();
-
-            miniController = (MiniController) findViewById( R.id.miniController1 );
-            castManager.addMiniController( miniController );
-
-            castConsumer = new CastConsumer( this, castManager );
-            castManager.addVideoCastConsumer( castConsumer );
-        }
+        initCasting();
 
         // Get movie viewing width
         WindowManager windowManager = (WindowManager) getSystemService( Context.WINDOW_SERVICE );
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics( metrics );
         width = Math.max( metrics.widthPixels, metrics.heightPixels );
+    }
+
+    protected void initCasting()
+    {
+        boolean castAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable( this ) == ConnectionResult.SUCCESS;
+        if ( castAvailable )
+        {
+            castManager = VideoApp.init( this );
+            castManager.reconnectSessionIfPossible();
+
+            miniController = (MiniController) findViewById( R.id.miniController );
+            castManager.addMiniController( miniController );
+
+            castConsumer = new CastConsumer( this, castManager );
+            castManager.addVideoCastConsumer( castConsumer );
+        }
     }
 
     @Override
@@ -90,7 +94,6 @@ public abstract class VideoActivity extends AppCompatActivity implements IVideoA
             castManager.incrementUiCounter();
 
             // HACK: device availability callbacks are not reliable
-            // TODO: Is this still needed?
             setCastAvailable( true );
         }
     }
@@ -257,7 +260,7 @@ public abstract class VideoActivity extends AppCompatActivity implements IVideoA
 
                 Intent shareIntent = new Intent( Intent.ACTION_VIEW );
                 shareIntent.setDataAndType( Uri.parse( url ), container.mimetype );
-                shareIntent.putExtra( Intent.EXTRA_TITLE, video.getFullTitle() );
+                shareIntent.putExtra( Intent.EXTRA_TITLE, title.getFullTitle( video ) );
                 startActivity( shareIntent );
             }
         }
@@ -362,7 +365,7 @@ public abstract class VideoActivity extends AppCompatActivity implements IVideoA
         Container container = video.getCasting();
 
         MediaMetadata metadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
-        metadata.putString( MediaMetadata.KEY_TITLE, video.getFullTitle() );
+        metadata.putString( MediaMetadata.KEY_TITLE, title.getFullTitle( video ) );
 
         if ( title.poster != null || title.thumb != null )
         {
@@ -371,7 +374,7 @@ public abstract class VideoActivity extends AppCompatActivity implements IVideoA
         }
 
         // TV series
-        if ( video.episode > 0 )
+        if ( video.episode != null )
         {
             metadata.putString( MediaMetadata.KEY_SERIES_TITLE, video.title );
             metadata.putInt( MediaMetadata.KEY_SEASON_NUMBER, video.season );

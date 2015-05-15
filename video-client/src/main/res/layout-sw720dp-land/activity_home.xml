@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal"
+              tools:context=".Home"
+              tools:ignore="MergeRootFrame">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/titles"
+            android:name="com.hudren.homevideo.TitlesFragment"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"/>
+
+        <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
+            android:id="@+id/miniController"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/title"
+        android:name="com.hudren.homevideo.TitleFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"/>
+
+</LinearLayout>
