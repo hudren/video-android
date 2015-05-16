@@ -4,7 +4,6 @@
     <string name="app_name">Videos@Home</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
-    <string name="action_discover">Discover Servers</string>
     <string name="pick_server">Pick a Server</string>
     <string name="media_route_menu_title">Cast</string>
 
@@ -29,8 +28,11 @@
     <string name="failed_unknown">An unknown error was encountered</string>
     <!--  Failure to connect -->
     <string name="failed_to_connect">Could not connect to the device</string>
+    <string name="action_play">Play</string>
     <string name="action_download">Download</string>
     <string name="action_downloads">Downloads</string>
+    <string name="action_imdb">View on IMDb</string>
+    <string name="action_netflix">View on Netflix</string>
     <string name="stream_desc">streaming icon</string>
     <string name="cast_desc">casting icon</string>
     <string name="download_desc">download icon</string>

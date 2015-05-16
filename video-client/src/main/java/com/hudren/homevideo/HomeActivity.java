@@ -32,9 +32,6 @@ public class HomeActivity
 
     private VideoServer server;
 
-    private Title title;
-    private Video video;
-
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
@@ -198,26 +195,8 @@ public class HomeActivity
     @Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
-        int id = item.getItemId();
-
-        switch ( id )
+        switch ( item.getItemId() )
         {
-        case R.id.action_play:
-            if ( title != null )
-                play( title, video );
-
-            return true;
-
-        case R.id.action_download:
-            if ( title != null )
-            {
-                List<Video> videos = new ArrayList<>();
-                videos.add( video );
-
-                startDownloading( videos );
-            }
-            return true;
-
         case R.id.action_refresh:
             title = null;
             video = null;

@@ -16,6 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -28,12 +29,15 @@ import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.hudren.homevideo.model.Container;
+import com.hudren.homevideo.model.Info;
 import com.hudren.homevideo.model.Subtitle;
 import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +56,9 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
     private CastConsumer castConsumer;
 
     private int width;
+
+    protected Title title;
+    protected Video video;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -131,6 +138,77 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
             castManager.addMediaRouterButton( menu, R.id.media_route_menu_item );
 
         return super.onCreateOptionsMenu( menu );
+    }
+
+    /**
+     * Opens the system browser for the specified URL.
+     *
+     * @param base The base url
+     * @param info The target page
+     */
+    private void openUrl( String base, String info )
+    {
+        try
+        {
+            String url;
+            if ( base.contains( "?" ) )
+                url = base + URLEncoder.encode( info, "UTF-8" );
+            else
+                url = base + info;
+
+            Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( url ) );
+            startActivity( intent );
+        }
+        catch ( UnsupportedEncodingException e )
+        {
+            Log.e( TAG, "encoding url", e );
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected( MenuItem item )
+    {
+        if ( title != null )
+        {
+            Info info = title.info;
+
+            switch ( item.getItemId() )
+            {
+            case R.id.action_play:
+                play( title, video );
+                return true;
+
+            case R.id.action_download:
+                List<Video> videos = new ArrayList<>();
+                videos.add( video );
+
+                startDownloading( videos );
+                return true;
+
+            case R.id.action_imdb:
+                if ( info != null )
+                {
+                    if ( info.imdbId != null )
+                        openUrl( "http://www.imdb.com/title/", info.imdbId );
+                    else
+                        openUrl( "http://www.imdb.com/find?q=", info.title );
+                }
+                return true;
+
+            case R.id.action_netflix:
+                if ( info != null )
+                {
+                    if ( info.netflixId != null )
+                        openUrl( "http://dvd.netflix.com/Movie/", info.netflixId );
+
+                    else
+                        openUrl( "http://dvd.netflix.com/Search?v1=", info.title );
+                }
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected( item );
     }
 
     public SharedPreferences getSharedPreferences()

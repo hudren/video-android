@@ -13,25 +13,28 @@
     <item
         android:id="@+id/action_play"
         android:icon="@drawable/ic_play_arrow_white_24dp"
-        android:title="@string/action_refresh"
+        android:title="@string/action_play"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_download"
+        android:icon="@drawable/ic_file_download_white_24dp"
+        android:title="@string/action_download"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_refresh"
         android:icon="@drawable/ic_refresh_white_24dp"
         android:title="@string/action_refresh"/>
 
-    <!--
     <item
-        android:id="@+id/action_discover"
-        android:showAsAction="never"
-        android:title="@string/action_discover"/>
-        -->
+        android:id="@+id/action_imdb"
+        android:title="@string/action_imdb"
+        app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_download"
-        android:icon="@drawable/ic_file_download_white_24dp"
-        android:title="@string/action_download"
+        android:id="@+id/action_netflix"
+        android:title="@string/action_netflix"
         app:showAsAction="never"/>
 
     <item

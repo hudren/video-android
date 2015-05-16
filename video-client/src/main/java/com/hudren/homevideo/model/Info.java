@@ -18,6 +18,8 @@ public class Info implements Serializable
     public String runtime;
 
     public String plot;
+    public String imdbId;
+    public String netflixId;
 
     public List<String> categories = Collections.emptyList();
     public List<String> subjects = Collections.emptyList();
