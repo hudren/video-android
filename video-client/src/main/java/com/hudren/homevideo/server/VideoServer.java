@@ -40,6 +40,7 @@ public class VideoServer
     private String network;
     private String name;
     private String url;
+    private String etag;
     private int versionCode;
 
     public VideoServer( HomeActivity activity )
@@ -67,6 +68,7 @@ public class VideoServer
         network = prefs.getString( "NETWORK_NAME", null );
         name = prefs.getString( "SERVER_NAME", null );
         url = prefs.getString( "SERVER_URL", null );
+        etag = prefs.getString( "TITLES_ETAG", null );
         versionCode = prefs.getInt( "CLIENT_VERSION", 0 );
     }
 
@@ -80,6 +82,7 @@ public class VideoServer
         prefs.putString( "NETWORK_NAME", network );
         prefs.putString( "SERVER_NAME", name );
         prefs.putString( "SERVER_URL", url );
+        prefs.putString( "TITLES_ETAG", etag );
         prefs.putInt( "CLIENT_VERSION", versionCode );
 
         prefs.apply();
@@ -96,6 +99,7 @@ public class VideoServer
         network = getNetworkName();
         this.name = name;
         this.url = url;
+        etag = null;
 
         savePrefs();
     }
@@ -112,7 +116,7 @@ public class VideoServer
         Toast.makeText( activity, "Connecting to server " + server, Toast.LENGTH_SHORT ).show();
 
         Log.d( TAG, "url = " + url );
-        new GetVideosTask( name ).execute( getTitlesUrl() );
+        new GetTitlesTask( name ).execute( getTitlesRequest() );
     }
 
     /**
@@ -126,8 +130,16 @@ public class VideoServer
                 discoverServer();
 
             else
-                new GetVideosTask( name ).execute( getTitlesUrl() );
+                new GetTitlesTask( name ).execute( getTitlesRequest() );
         }
+    }
+
+    private HttpUtil.CachingRequest getTitlesRequest()
+    {
+        HttpUtil.CachingRequest request = new HttpUtil.CachingRequest();
+        request.url = getTitlesUrl();
+        request.etag = etag;
+        return request;
     }
 
     private String getTitlesUrl()
@@ -194,27 +206,37 @@ public class VideoServer
         return network != null && network.isConnected();
     }
 
-    private class GetVideosTask extends AsyncTask<String, Void, String>
+    private class GetTitlesTask extends AsyncTask<HttpUtil.CachingRequest, Void, HttpUtil.CachingResponse>
     {
         private final String name;
 
-        private GetVideosTask( String name )
+        private GetTitlesTask( String name )
         {
             this.name = name;
         }
 
         @Override
-        protected String doInBackground( String... urls )
+        protected HttpUtil.CachingResponse doInBackground( HttpUtil.CachingRequest... params )
         {
-            return HttpUtil.GET( urls[0] );
+            return HttpUtil.GET( params[0] );
         }
 
         @Override
-        protected void onPostExecute( String result )
+        protected void onPostExecute( HttpUtil.CachingResponse response )
         {
-            if ( result != null && result.length() > 0 )
+            if ( response.status == 200 )
             {
-                activity.saveTitles( name, result );
+                if ( response.body != null && response.body.length() > 0 )
+                {
+                    etag = response.etag;
+                    savePrefs();
+
+                    activity.saveTitles( name, response.body );
+                }
+            }
+            else if ( response.status == 304 )
+            {
+                activity.saveTitles( name, null );
             }
             else
             {

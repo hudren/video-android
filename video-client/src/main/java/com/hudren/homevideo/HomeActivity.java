@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 import com.hudren.homevideo.server.VideoServer;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,16 +76,22 @@ public class HomeActivity
      */
     public void saveTitles( String name, String json )
     {
-        SharedPreferences.Editor editor = getSharedPreferences().edit();
-        editor.putString( "titles", json );
-        editor.apply();
-
         VideoApp.setConnected( true );
 
         TitlesFragment titlesFragment = (TitlesFragment) getFragmentManager().findFragmentById( R.id.titles );
         if ( titlesFragment != null )
             titlesFragment.setConnected( true );
 
+        if ( json != null )
+        {
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            editor.putString( "titles", json );
+            editor.apply();
+
+            setTitles( json );
+        }
+
+        // Clear shown title
         if ( title == null )
         {
             TitleFragment titleFragment = (TitleFragment) getFragmentManager().findFragmentById( R.id.title );
@@ -93,7 +101,6 @@ public class HomeActivity
             setTitle( name );
         }
 
-        setTitles( json );
         invalidateOptionsMenu();
 
         server.checkUpdate();

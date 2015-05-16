@@ -2,6 +2,7 @@ package com.hudren.homevideo.server;
 
 import android.util.Log;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -35,7 +36,8 @@ public class HttpUtil
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse httpResponse = httpclient.execute( new HttpGet( url ) );
 
-            if ( httpResponse.getStatusLine().getStatusCode() == 200 )
+            int status = httpResponse.getStatusLine().getStatusCode();
+            if ( status == 200 )
             {
                 InputStream inputStream = httpResponse.getEntity().getContent();
                 if ( inputStream != null )
@@ -48,6 +50,45 @@ public class HttpUtil
         }
 
         return result;
+    }
+
+    /**
+     * Returns the response from the server using the GET method.
+     *
+     * @param request The request
+     * @return The server response
+     */
+    public static CachingResponse GET( CachingRequest request )
+    {
+        CachingResponse response = new CachingResponse();
+
+        try
+        {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpGet httpRequest = new HttpGet( request.url );
+            if ( request.etag != null )
+                httpRequest.addHeader( "If-None-Match", request.etag );
+
+            HttpResponse httpResponse = httpclient.execute( httpRequest );
+            response.status = httpResponse.getStatusLine().getStatusCode();
+
+            if ( response.status == 200 )
+            {
+                InputStream inputStream = httpResponse.getEntity().getContent();
+                if ( inputStream != null )
+                    response.body = convertInputStreamToString( inputStream );
+            }
+
+            Header etagHeader = httpResponse.getFirstHeader( "Etag" );
+            if ( etagHeader != null )
+                response.etag = etagHeader.getValue();
+        }
+        catch ( Exception e )
+        {
+            Log.e( TAG, e.getLocalizedMessage() );
+        }
+
+        return response;
     }
 
     /**
@@ -74,6 +115,19 @@ public class HttpUtil
         }
 
         return result;
+    }
+
+    public static class CachingRequest
+    {
+        public String url;
+        public String etag;
+    }
+
+    public static class CachingResponse
+    {
+        public int status;
+        public String etag;
+        public String body;
     }
 
 }

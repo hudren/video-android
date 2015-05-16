@@ -8,8 +8,8 @@ android {
         applicationId "com.hudren.homevideo"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 16
-        versionName "1.1.1"
+        versionCode 17
+        versionName "1.1.2"
     }
     buildTypes {
         release {
@@ -29,5 +29,5 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:mediarouter-v7:22.1.1'
-    compile 'com.google.android.gms:play-services-cast:7.3.0'
+    compile 'com.google.android.gms:play-services-cast:7.+'
 }
