@@ -165,6 +165,25 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
         }
     }
 
+    private void showMenuItems( Menu menu, boolean show, int... ids )
+    {
+        for ( int id : ids )
+        {
+            MenuItem item = menu.findItem( id );
+            if ( item != null )
+                item.setVisible( show );
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu( Menu menu )
+    {
+        showMenuItems( menu, title != null, R.id.action_play, R.id.action_download );
+        showMenuItems( menu, title != null && title.info != null, R.id.action_imdb, R.id.action_netflix );
+
+        return super.onPrepareOptionsMenu( menu );
+    }
+
     @Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
@@ -200,7 +219,6 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
                 {
                     if ( info.netflixId != null )
                         openUrl( "http://dvd.netflix.com/Movie/", info.netflixId );
-
                     else
                         openUrl( "http://dvd.netflix.com/Search?v1=", info.title );
                 }

@@ -179,20 +179,6 @@ public class HomeActivity
     }
 
     @Override
-    public boolean onPrepareOptionsMenu( Menu menu )
-    {
-        MenuItem item = menu.findItem( R.id.action_play );
-        if ( item != null )
-            item.setVisible( title != null );
-
-        item = menu.findItem( R.id.action_download );
-        if ( item != null )
-            item.setVisible( title != null );
-
-        return super.onPrepareOptionsMenu( menu );
-    }
-
-    @Override
     public boolean onOptionsItemSelected( MenuItem item )
     {
         switch ( item.getItemId() )
