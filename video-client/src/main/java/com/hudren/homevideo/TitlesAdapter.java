@@ -43,7 +43,7 @@ public class TitlesAdapter extends BaseAdapter
 
     private List<Title> titles = new ArrayList<>();
 
-    public TitlesAdapter( Context context, boolean detailed )
+    public TitlesAdapter( Context context )
     {
         inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 

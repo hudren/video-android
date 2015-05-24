@@ -40,7 +40,7 @@ public class TitlesFragment extends ListFragment implements IVideoFragment
     {
         View rootView = inflater.inflate( R.layout.fragment_titles, container, false );
 
-        adapter = new TitlesAdapter( getActivity(), !multipane );
+        adapter = new TitlesAdapter( getActivity() );
         setListAdapter( adapter );
 
         onPreferencesChanged();
