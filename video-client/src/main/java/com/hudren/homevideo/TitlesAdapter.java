@@ -1,16 +1,15 @@
 package com.hudren.homevideo;
 
 import android.content.Context;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
+import com.hudren.homevideo.model.FormatUtils;
 import com.hudren.homevideo.model.Info;
 import com.hudren.homevideo.model.Season;
 import com.hudren.homevideo.model.Title;
@@ -215,32 +214,43 @@ public class TitlesAdapter extends BaseAdapter
         String details = "";
         if ( video != null )
         {
-            details += info.year;
+            if ( info.year > 0 )
+                details += info.year;
 
             String language = video.getLanguage();
             if ( language != null && language.length() > 0 && !language.equals( userLanguage ) )
                 details += "    " + language;
 
-            if (info.rated != null && info.rated.length() > 0)
+            if ( info.rated != null && info.rated.length() > 0 )
                 details += "    " + info.rated;
 
-            if (info.runtime != null && info.runtime.length() > 0)
+            if ( info.runtime != null && info.runtime.length() > 0 )
                 details += "    " + info.runtime;
         }
         else
         {
+            if ( !title.hasSeasons() && info.year > 0 )
+                details += info.year;
+
             List<Season> seasons = title.getSeasons();
             int count = seasons.size();
-            if ( count == 1 )
-                details = count + " Season";
-            else if ( count > 1 )
-                details = count + " Seasons";
+            if (count > 0)
+            {
+                ArrayList<Integer> numbers = new ArrayList<>(  );
+                for (Season season : seasons)
+                numbers.add( season.index );
 
-            if (info.rated != null)
+                if ( count == 1 )
+                    details = "Season " + FormatUtils.ranges( numbers );
+                else
+                    details = "Seasons " + FormatUtils.ranges( numbers );
+            }
+
+            if ( info.rated != null )
                 details += "    " + info.rated;
         }
 
-        text2.setText( details );
+        text2.setText( details.trim() );
 
         // Change visibility of icons
         if ( showIndicators )

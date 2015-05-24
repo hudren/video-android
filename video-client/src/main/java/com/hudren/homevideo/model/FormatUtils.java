@@ -1,5 +1,7 @@
 package com.hudren.homevideo.model;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,5 +40,53 @@ public class FormatUtils
         long seconds = TimeUnit.MILLISECONDS.toSeconds( millis ) - TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes( millis ) );
 
         return String.format( "%d:%02d:%02d", hours, minutes, seconds );
+    }
+
+    public static String ranges(Collection<Integer> indexes)
+    {
+        String ranges = "";
+        Integer first = null;
+        Integer next = null;
+
+        if (indexes != null)
+        {
+            for (Integer index : indexes)
+            {
+                if (first == null)
+                {
+                    ranges += index;
+                    first = index;
+                    next = null;
+                }
+                else if (next == null)
+                {
+                    if (index == first + 1)
+                        next = index;
+
+                    else
+                    {
+                        ranges += "," + index;
+                        first = index;
+                    }
+                }
+                else
+                {
+                    if (index == next + 1)
+                        next = index;
+
+                    else
+                    {
+                        ranges += "-" + next + "," + index;
+                        first = index;
+                        next = null;
+                    }
+                }
+            }
+        }
+
+        if (next != null  )
+            ranges += "-" + next;
+
+        return ranges;
     }
 }
