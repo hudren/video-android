@@ -24,6 +24,8 @@ import com.hudren.homevideo.R;
 import com.hudren.homevideo.model.Server;
 import com.hudren.homevideo.model.Version;
 
+import java.net.HttpURLConnection;
+
 /**
  * Provides server discovery and connection. This class will first attempt to connect to the last
  * known server. If not successful, it will attempt to discover a server on the local network.
@@ -224,7 +226,7 @@ public class VideoServer
         @Override
         protected void onPostExecute( HttpUtil.CachingResponse response )
         {
-            if ( response.status == 200 )
+            if ( response.status == HttpURLConnection.HTTP_OK )
             {
                 if ( response.body != null && response.body.length() > 0 )
                 {
@@ -234,14 +236,11 @@ public class VideoServer
                     activity.saveTitles( name, response.body );
                 }
             }
-            else if ( response.status == 304 )
-            {
+            else if ( response.status == HttpURLConnection.HTTP_NOT_MODIFIED )
                 activity.saveTitles( name, null );
-            }
+
             else
-            {
                 discoverServer();
-            }
         }
     }
 

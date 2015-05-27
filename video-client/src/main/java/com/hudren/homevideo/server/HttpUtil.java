@@ -2,16 +2,12 @@ package com.hudren.homevideo.server;
 
 import android.util.Log;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by jeff on 11/17/14.
@@ -31,15 +27,16 @@ public class HttpUtil
     {
         String result = "";
 
+        HttpURLConnection connection = null;
         try
         {
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpclient.execute( new HttpGet( url ) );
+            connection = (HttpURLConnection) new URL( url ).openConnection();
+            connection.setRequestProperty( "Accept-Charset", "UTF-8" );
 
-            int status = httpResponse.getStatusLine().getStatusCode();
-            if ( status == 200 )
+            int status = connection.getResponseCode();
+            if ( status == HttpURLConnection.HTTP_OK )
             {
-                InputStream inputStream = httpResponse.getEntity().getContent();
+                InputStream inputStream = connection.getInputStream();
                 if ( inputStream != null )
                     result = convertInputStreamToString( inputStream );
             }
@@ -47,6 +44,11 @@ public class HttpUtil
         catch ( Exception e )
         {
             Log.e( TAG, e.getLocalizedMessage() );
+        }
+        finally
+        {
+            if ( connection != null )
+                connection.disconnect();
         }
 
         return result;
@@ -62,30 +64,32 @@ public class HttpUtil
     {
         CachingResponse response = new CachingResponse();
 
+        HttpURLConnection connection = null;
         try
         {
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpGet httpRequest = new HttpGet( request.url );
+            connection = (HttpURLConnection) new URL( request.url ).openConnection();
+            connection.setRequestProperty( "Accept-Charset", "UTF-8" );
             if ( request.etag != null )
-                httpRequest.addHeader( "If-None-Match", request.etag );
+                connection.setRequestProperty( "If-None-Match", request.etag );
 
-            HttpResponse httpResponse = httpclient.execute( httpRequest );
-            response.status = httpResponse.getStatusLine().getStatusCode();
-
-            if ( response.status == 200 )
+            response.status = connection.getResponseCode();
+            if ( response.status == HttpURLConnection.HTTP_OK )
             {
-                InputStream inputStream = httpResponse.getEntity().getContent();
+                InputStream inputStream = connection.getInputStream();
                 if ( inputStream != null )
                     response.body = convertInputStreamToString( inputStream );
             }
 
-            Header etagHeader = httpResponse.getFirstHeader( "Etag" );
-            if ( etagHeader != null )
-                response.etag = etagHeader.getValue();
+            response.etag = connection.getHeaderField( "Etag" );
         }
         catch ( Exception e )
         {
             Log.e( TAG, e.getLocalizedMessage() );
+        }
+        finally
+        {
+            if ( connection != null )
+                connection.disconnect();
         }
 
         return response;
