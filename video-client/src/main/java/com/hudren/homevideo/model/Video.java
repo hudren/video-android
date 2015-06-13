@@ -61,7 +61,7 @@ public class Video implements Serializable
 
                 // Container format
                 if ( comp == 0 )
-                    comp = typeRank( lhs.mimetype ).compareTo( typeRank( rhs.mimetype ) );
+                    comp = -typeRank( lhs.mimetype ).compareTo( typeRank( rhs.mimetype ) );
 
                 // File size
                 if ( comp == 0 )
