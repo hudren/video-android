@@ -7,4 +7,5 @@
 .idea/libraries
 local.properties
 build/
+infer-out/
 publish
