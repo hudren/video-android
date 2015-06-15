@@ -3,13 +3,9 @@ package com.hudren.homevideo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
 
 import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Displays a single title.

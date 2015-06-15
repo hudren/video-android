@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -18,7 +17,6 @@ import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 import com.hudren.homevideo.server.VideoServer;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;

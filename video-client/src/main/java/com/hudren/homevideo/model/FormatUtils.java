@@ -1,7 +1,6 @@
 package com.hudren.homevideo.model;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,25 +41,25 @@ public class FormatUtils
         return String.format( "%d:%02d:%02d", hours, minutes, seconds );
     }
 
-    public static String ranges(Collection<Integer> indexes)
+    public static String ranges( Collection<Integer> indexes )
     {
         String ranges = "";
         Integer first = null;
         Integer next = null;
 
-        if (indexes != null)
+        if ( indexes != null )
         {
-            for (Integer index : indexes)
+            for ( Integer index : indexes )
             {
-                if (first == null)
+                if ( first == null )
                 {
                     ranges += index;
                     first = index;
                     next = null;
                 }
-                else if (next == null)
+                else if ( next == null )
                 {
-                    if (index == first + 1)
+                    if ( index == first + 1 )
                         next = index;
 
                     else
@@ -71,7 +70,7 @@ public class FormatUtils
                 }
                 else
                 {
-                    if (index == next + 1)
+                    if ( index == next + 1 )
                         next = index;
 
                     else
@@ -84,7 +83,7 @@ public class FormatUtils
             }
         }
 
-        if (next != null  )
+        if ( next != null )
             ranges += "-" + next;
 
         return ranges;

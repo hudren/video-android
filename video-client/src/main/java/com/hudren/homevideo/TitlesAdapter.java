@@ -234,11 +234,11 @@ public class TitlesAdapter extends BaseAdapter
 
             List<Season> seasons = title.getSeasons();
             int count = seasons.size();
-            if (count > 0)
+            if ( count > 0 )
             {
-                ArrayList<Integer> numbers = new ArrayList<>(  );
-                for (Season season : seasons)
-                numbers.add( season.index );
+                ArrayList<Integer> numbers = new ArrayList<>();
+                for ( Season season : seasons )
+                    numbers.add( season.index );
 
                 if ( count == 1 )
                     details = "Season " + FormatUtils.ranges( numbers );
