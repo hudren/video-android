@@ -46,4 +46,10 @@ public class Container implements Serializable
     {
         return hasH264() && audio != null && audio.contains( "AAC" );
     }
+
+    public boolean isCompatible()
+    {
+        return canCast() && "video/mp4".equals( mimetype );
+    }
+
 }

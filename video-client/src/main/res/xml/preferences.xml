@@ -23,8 +23,8 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="stream_h264"
-        android:title="@string/pref_stream_h264">
+        android:key="compatible_video"
+        android:title="@string/pref_compatible_video">
     </CheckBoxPreference>
 
     <CheckBoxPreference

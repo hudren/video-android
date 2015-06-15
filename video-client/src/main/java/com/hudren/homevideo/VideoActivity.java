@@ -337,16 +337,16 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
             // Get user preference for highest quality
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
             boolean quality = prefs.getBoolean( "stream_highest_quality", false );
-            boolean web = prefs.getBoolean( "stream_h264", false );
+            boolean compatible = prefs.getBoolean( "compatible_video", false );
 
             // Find the best container
             Container container;
             if ( !VideoApp.isConnected() )
                 container = downloadedContainer( video );
-            else if ( quality || web )
-                container = video.getStreaming( quality, web );
+            else if ( quality )
+                container = video.getStreaming( quality, compatible );
             else
-                container = video.getStreaming( width );
+                container = video.getStreaming( width, compatible );
 
             // Check to see if it has already been downloaded
             if ( container != null )
@@ -408,8 +408,11 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
      */
     public void startDownloading( Video video, boolean visible )
     {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
+        boolean compatible = prefs.getBoolean( "compatible_video", false );
+
         // Download video file
-        Container container = video.getDownload();
+        Container container = video.getDownload( compatible );
         long id = downloadFile( container.url, video.getFullTitle(), container.mimetype, Environment.DIRECTORY_MOVIES, visible );
         new DownloadMonitor( this ).execute( id );
 

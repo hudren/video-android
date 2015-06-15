@@ -183,7 +183,7 @@ public class TitlesFragment extends ListFragment implements IVideoFragment
 
             if ( video != null )
             {
-                Container container = video.getDownload();
+                Container container = video.getDownload( false );
                 if ( container != null )
                 {
                     if ( checked )

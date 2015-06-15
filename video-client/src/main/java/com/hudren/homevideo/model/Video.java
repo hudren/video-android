@@ -61,7 +61,7 @@ public class Video implements Serializable
 
                 // Container format
                 if ( comp == 0 )
-                    comp = -typeRank( lhs.mimetype ).compareTo( typeRank( rhs.mimetype ) );
+                    comp = typeRank( lhs.mimetype ).compareTo( typeRank( rhs.mimetype ) );
 
                 // File size
                 if ( comp == 0 )
@@ -127,45 +127,53 @@ public class Video implements Serializable
      * Returns the best video for streaming based on quality.
      *
      * @param highest_quality True, if there are no bandwidth or performance restrictions
-     * @param compatible      True, prefer H.264 for hardware decoding
+     * @param compatible      Prefer compatible container
      * @return The container to be used for streaming
      */
     public Container getStreaming( boolean highest_quality, boolean compatible )
     {
-        Container container = containers.get( 0 );
+        long bitrate = highest_quality ? UNPLAYABLE_BITRATE : HIGH_QUALITY_BITRATE;
 
-        if ( highest_quality )
+        if ( compatible )
         {
-            int i = 1;
-            while ( i < containers.size() && (container.bitrate > UNPLAYABLE_BITRATE || (compatible && !container.hasH264())) )
-                container = containers.get( i++ );
-        }
-        else
-        {
-            int i = 1;
-            while ( i < containers.size() && (container.bitrate > HIGH_QUALITY_BITRATE || !container.hasH264()) )
-                container = containers.get( i++ );
+            // Search for MP4 container
+            for ( Container container : containers )
+                if ( container.bitrate <= bitrate && container.isCompatible() )
+                    return container;
+
+            // Search for H.264
+            for ( Container container : containers )
+                if ( container.bitrate <= bitrate && container.hasH264() )
+                    return container;
         }
 
-        return container;
+        // Search for anything within bitrate restriction
+        for ( Container container : containers )
+            if ( container.bitrate <= bitrate )
+                return container;
+
+        return null;
     }
 
     /**
      * Returns the best video for streaming based on bitrate and display width.
      *
-     * @param width The maximum display width in pixels
+     * @param width      The maximum display width in pixels]
+     * @param compatible Prefer compatible container
      * @return The container to be used for streaming
      */
-    public Container getStreaming( int width )
+    public Container getStreaming( int width, boolean compatible )
     {
+        List<Container> containers = containers( compatible );
         Container container = containers.get( 0 );
 
         int i = 1;
-        while ( i < containers.size() && (container.bitrate > HIGH_QUALITY_BITRATE || !container.hasH264()) )
+        // Look for first playable container
+        while ( i < containers.size() && (container.bitrate > HIGH_QUALITY_BITRATE) )
             container = containers.get( i++ );
 
         // Look for next video greater than or equal to desired width
-        while ( i < containers.size() && containers.get( i ).width >= width )
+        while ( i < containers.size() && containers.get( i ).width > width )
             container = containers.get( i++ );
 
         return container;
@@ -174,10 +182,13 @@ public class Video implements Serializable
     /**
      * Returns the smallest container for downloading.
      *
+     * @param compatible Prefer compatible container
      * @return The container to download
      */
-    public Container getDownload()
+    public Container getDownload( boolean compatible )
     {
+        List<Container> containers = containers( compatible );
+
         // Find first downloadable container
         int i = 0;
         while ( i < containers.size() && !containers.get( i ).canDownload() )
@@ -197,6 +208,11 @@ public class Video implements Serializable
      */
     public Container getCasting()
     {
+        // Prefer mp4 container
+        for ( Container container : containers )
+            if ( container.isCompatible() && container.bitrate < HIGH_QUALITY_BITRATE )
+                return container;
+
         // Prefer lower bitrate for casting
         for ( Container container : containers )
             if ( container.canCast() && container.bitrate < HIGH_QUALITY_BITRATE )
@@ -208,6 +224,24 @@ public class Video implements Serializable
                 return container;
 
         return null;
+    }
+
+    private List<Container> containers( boolean compatible )
+    {
+        List<Container> containers = new ArrayList<>();
+        if ( compatible )
+        {
+            // Filter compatible containers
+            for ( Container container : this.containers )
+                if ( container.isCompatible() )
+                    containers.add( container );
+        }
+
+        // Look at all containers
+        if ( containers.size() == 0 )
+            containers = this.containers;
+
+        return containers;
     }
 
     /**
@@ -315,9 +349,9 @@ public class Video implements Serializable
         return join( ", ", codecs );
     }
 
-    public String getDownloadSize()
+    public String getDownloadSize( boolean compatible )
     {
-        Container container = getDownload();
+        Container container = getDownload( compatible );
 
         return container != null ? container.getFileSize() : null;
     }
@@ -329,7 +363,7 @@ public class Video implements Serializable
 
     public boolean canDownload()
     {
-        return getDownload() != null;
+        return getDownload( false ) != null;
     }
 
     public boolean canCast()

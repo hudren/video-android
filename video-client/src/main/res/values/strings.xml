@@ -48,7 +48,7 @@
     <string name="pref_sort_videos">Sort Videos</string>
     <string name="pref_quick_play">Quick Play</string>
     <string name="pref_stream_highest">Stream Highest Quality</string>
-    <string name="pref_stream_h264">Prefer H.264 Video</string>
+    <string name="pref_compatible_video">Prefer MP4 / H.264</string>
     <string name="pref_launch_downloads">Launch Downloads</string>
     <string name="sort_alphabetic">Title</string>
     <string name="sort_most_recent">Most Recent</string>
