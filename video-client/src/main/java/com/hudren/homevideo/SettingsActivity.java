@@ -18,7 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-public class SettingsActivity extends PreferenceActivity
+import com.hudren.homevideo.util.AppCompatPreferenceActivity;
+
+public class SettingsActivity extends AppCompatPreferenceActivity
 {
     private Toolbar toolbar;
 
@@ -51,7 +53,7 @@ public class SettingsActivity extends PreferenceActivity
         ViewGroup contentWrapper = (ViewGroup) contentView.findViewById( R.id.content_wrapper );
         LayoutInflater.from( this ).inflate( layoutResID, contentWrapper, true );
 
-        getWindow().setContentView( contentView );
+        super.setContentView( contentView );
     }
 
     @Override
