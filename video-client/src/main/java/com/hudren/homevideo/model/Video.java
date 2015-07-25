@@ -358,7 +358,8 @@ public class Video implements Serializable
 
     public boolean shouldStream( boolean streamHighQuality )
     {
-        return streamHighQuality || getStreaming( false, false ).bitrate < HIGH_QUALITY_BITRATE;
+        Container streaming = getStreaming( false, false );
+        return streamHighQuality || (streaming != null && streaming.bitrate < HIGH_QUALITY_BITRATE);
     }
 
     public boolean canDownload()
