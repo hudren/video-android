@@ -9,7 +9,7 @@ Features include:
 
 * Streaming 1080p full Bluray quality video to your Android devices
 * Downloading videos and subtitles to your device for offline playback
-* Casting to Google cast devices (including vtt subtitles)
+* Casting to Chromecast devices (including vtt subtitles)
 * Automatic encoding of videos for downloading and casting
 
 This software is intended to be used over your local (high bandwidth) network
@@ -20,9 +20,9 @@ only.
 The following software is required to build this Android application:
 
 * Java 7
-* Android Studio 1.2
-* Android SDK 21
-* Android Support Library 22.1
+* Android Studio 1.3
+* Android SDK 22
+* Android Support Library 22.2.1
 * Google Cast Companion Library 1.14+
 
 The Cast Companion Library should be cloned from Github into a sibling
@@ -38,8 +38,7 @@ list, although the refresh menu item can be used to trigger the discovery
 process and reload the available videos.
 
 Tapping on a video will start playback either on the device by invoking your
-preferred video player or on a Google cast device (Chromecast, Nexus Player) if
-one is connected.
+preferred video player or on a Chromecast device if one is connected.
 
 This app does not playback videos, but shares the video to applications that
 support http streaming. (Some players will work well, others will not.)
