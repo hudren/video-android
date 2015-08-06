@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastController;
 
 /**
  * Application that holds the VideoCastManager.
@@ -44,6 +45,8 @@ public class VideoApp extends Application
                     VideoCastManager.FEATURE_WIFI_RECONNECT |
                     VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
                     VideoCastManager.FEATURE_DEBUGGING );
+
+            castManager.setNextPreviousVisibilityPolicy( VideoCastController.NEXT_PREV_VISIBILITY_POLICY_HIDDEN );
 
             initialized = true;
         }
