@@ -441,6 +441,8 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
         // Launch Android Downloads app
         if ( launch )
             launchDownloads();
+        else
+            Toast.makeText( this, R.string.download_started, Toast.LENGTH_SHORT ).show();
     }
 
     /**
