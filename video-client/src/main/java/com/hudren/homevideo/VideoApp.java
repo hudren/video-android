@@ -46,6 +46,7 @@ public class VideoApp extends Application
                     VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
                     VideoCastManager.FEATURE_DEBUGGING );
 
+            castManager.setCastControllerImmersive( false );
             castManager.setNextPreviousVisibilityPolicy( VideoCastController.NEXT_PREV_VISIBILITY_POLICY_HIDDEN );
 
             initialized = true;
