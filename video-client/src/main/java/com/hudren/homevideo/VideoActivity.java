@@ -76,15 +76,11 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
 
     protected void initCasting()
     {
+        castManager = VideoApp.init( this );
+
         boolean castAvailable = GooglePlayServicesUtil.isGooglePlayServicesAvailable( this ) == ConnectionResult.SUCCESS;
         if ( castAvailable )
         {
-            castManager = VideoApp.init( this );
-            castManager.reconnectSessionIfPossible();
-
-            miniController = (MiniController) findViewById( R.id.miniController );
-            castManager.addMiniController( miniController );
-
             castConsumer = new CastConsumer( this, castManager );
             castManager.addVideoCastConsumer( castConsumer );
         }
@@ -248,10 +244,8 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
     @Override
     public boolean dispatchKeyEvent( @NonNull KeyEvent event )
     {
-        if ( castManager != null && castManager.onDispatchVolumeKeyEvent( event, VOLUME_INCREMENT ) )
-            return true;
+        return castManager != null && castManager.onDispatchVolumeKeyEvent( event, VOLUME_INCREMENT ) || super.dispatchKeyEvent( event );
 
-        return super.dispatchKeyEvent( event );
     }
 
     /**

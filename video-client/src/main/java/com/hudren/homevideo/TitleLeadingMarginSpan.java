@@ -19,12 +19,6 @@ class TitleLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2
         this.lines = lines;
     }
 
-    /**
-     * Apply the margin
-     *
-     * @param first
-     * @return
-     */
     @Override
     public int getLeadingMargin( boolean first )
     {

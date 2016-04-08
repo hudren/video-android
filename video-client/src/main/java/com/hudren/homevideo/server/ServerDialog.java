@@ -36,11 +36,14 @@ public class ServerDialog extends DialogFragment implements DialogInterface.OnCl
         servers = (ArrayList<Server>) bundle.getSerializable( DATA );
 
         // Display the server name
-        CharSequence[] choices = new CharSequence[servers.size()];
-        for ( int i = 0; i < servers.size(); i++ )
-            choices[i] = servers.get( i ).toString();
+        if (servers!=null)
+        {
+            CharSequence[] choices = new CharSequence[servers.size()];
+            for ( int i = 0; i < servers.size(); i++ )
+                choices[i] = servers.get( i ).toString();
 
-        dialog.setItems( choices, this );
+            dialog.setItems( choices, this );
+        }
 
         return dialog.create();
     }

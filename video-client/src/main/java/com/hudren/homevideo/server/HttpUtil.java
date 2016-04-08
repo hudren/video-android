@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by jeff on 11/17/14.
+ * HTTP utility class.
  */
 public class HttpUtil
 {

@@ -1,7 +1,7 @@
 package com.hudren.homevideo;
 
 /**
- * Created by jeff on 5/9/15.
+ * Interface for fragments displaying videos.
  */
 public interface IVideoFragment
 {

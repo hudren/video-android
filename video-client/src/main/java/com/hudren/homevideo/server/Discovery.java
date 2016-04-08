@@ -74,7 +74,7 @@ public class Discovery
      */
     private ArrayList<Server> broadcastDiscovery()
     {
-        ArrayList<Server> response = new ArrayList<Server>();
+        ArrayList<Server> response = new ArrayList<>();
 
         String data = "DISCOVER_VIDEO_SERVER_REQUEST";
         DatagramSocket socket = null;
@@ -134,8 +134,6 @@ public class Discovery
      */
     private class DiscoveryTask extends AsyncTask<Void, Void, ArrayList<Server>>
     {
-
-        private boolean tried;
 
         @Override
         protected ArrayList<Server> doInBackground( Void... params )

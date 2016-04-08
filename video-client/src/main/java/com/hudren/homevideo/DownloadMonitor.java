@@ -7,21 +7,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 /**
- * Created by jeff on 11/17/14.
+ * Monitors the download and logs the result.
  */
 public class DownloadMonitor extends AsyncTask<Long, Void, Void>
 {
     @SuppressWarnings("unused")
     private final static String TAG = "DownloadMonitor";
 
-    private final Context context;
-
     private final DownloadManager manager;
 
     public DownloadMonitor( Context context )
     {
-        this.context = context;
-
         this.manager = (DownloadManager) context.getSystemService( Context.DOWNLOAD_SERVICE );
     }
 

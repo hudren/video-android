@@ -4,7 +4,7 @@ import com.hudren.homevideo.model.Title;
 import com.hudren.homevideo.model.Video;
 
 /**
- * Created by jeff on 5/11/15.
+ * Interface for activities displaying multiple videos.
  */
 public interface IVideoActivity
 {

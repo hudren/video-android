@@ -40,7 +40,8 @@ public class VideoApp extends Application
         {
             VideoCastManager castManager = VideoCastManager.initialize( context, APPLICATION_ID, null, null );
 
-            castManager.enableFeatures( VideoCastManager.FEATURE_NOTIFICATION |
+            castManager.enableFeatures( VideoCastManager.FEATURE_AUTO_RECONNECT |
+                    VideoCastManager.FEATURE_NOTIFICATION |
                     VideoCastManager.FEATURE_LOCKSCREEN |
                     VideoCastManager.FEATURE_WIFI_RECONNECT |
                     VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
