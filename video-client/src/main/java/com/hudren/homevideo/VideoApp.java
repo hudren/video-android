@@ -4,8 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
-import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastController;
 
 /**
  * Application that holds the VideoCastManager.
@@ -38,17 +38,20 @@ public class VideoApp extends Application
     {
         if ( !initialized )
         {
-            VideoCastManager castManager = VideoCastManager.initialize( context, APPLICATION_ID, null, null );
+            CastConfiguration options = new CastConfiguration.Builder( APPLICATION_ID )
+                    .enableAutoReconnect()
+                    .enableCaptionManagement()
+                    .enableDebug()
+                    .enableLockScreen()
+                    .enableWifiReconnection()
+                    .enableNotification()
+                    .addNotificationAction( CastConfiguration.NOTIFICATION_ACTION_PLAY_PAUSE, true )
+                    .addNotificationAction( CastConfiguration.NOTIFICATION_ACTION_DISCONNECT, true )
+                    .setNextPrevVisibilityPolicy( CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_HIDDEN )
+                    .setCastControllerImmersive( false )
+                    .build();
 
-            castManager.enableFeatures( VideoCastManager.FEATURE_AUTO_RECONNECT |
-                    VideoCastManager.FEATURE_NOTIFICATION |
-                    VideoCastManager.FEATURE_LOCKSCREEN |
-                    VideoCastManager.FEATURE_WIFI_RECONNECT |
-                    VideoCastManager.FEATURE_CAPTIONS_PREFERENCE |
-                    VideoCastManager.FEATURE_DEBUGGING );
-
-            castManager.setCastControllerImmersive( false );
-            castManager.setNextPreviousVisibilityPolicy( VideoCastController.NEXT_PREV_VISIBILITY_POLICY_HIDDEN );
+            VideoCastManager.initialize( context, options );
 
             initialized = true;
         }

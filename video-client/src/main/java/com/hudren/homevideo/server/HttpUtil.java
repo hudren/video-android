@@ -109,7 +109,7 @@ public class HttpUtil
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) );
         try
         {
-            String line = "";
+            String line;
             while ( (line = bufferedReader.readLine()) != null )
                 result += line + "\n";
         }

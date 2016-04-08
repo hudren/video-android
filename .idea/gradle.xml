@@ -9,14 +9,12 @@
         <option name="gradleJvm" value="1.8" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../CastCompanionLibrary-android" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/video-client" />
           </set>
         </option>
         <option name="myModules">
           <set>
-            <option value="$PROJECT_DIR$/../CastCompanionLibrary-android" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/video-client" />
           </set>

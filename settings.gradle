@@ -1,4 +1,1 @@
 include ':video-client'
-
-include ':CastCompanionLibrary-android'
-project(':CastCompanionLibrary-android').projectDir = new File('../CastCompanionLibrary-android')

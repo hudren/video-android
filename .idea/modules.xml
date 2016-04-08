@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../CastCompanionLibrary-android/CastCompanionLibrary-android.iml" filepath="$PROJECT_DIR$/../CastCompanionLibrary-android/CastCompanionLibrary-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/video-android.iml" filepath="$PROJECT_DIR$/video-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/video-client/video-client.iml" filepath="$PROJECT_DIR$/video-client/video-client.iml" />
     </modules>
   </component>
 </project>
-
