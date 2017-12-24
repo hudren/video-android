@@ -63,7 +63,7 @@ public class VideoServer
     /**
      * Loads the network and server information for the last connected server.
      */
-    public void loadPrefs()
+    private void loadPrefs()
     {
         SharedPreferences prefs = activity.getSharedPreferences();
 
@@ -77,7 +77,7 @@ public class VideoServer
     /**
      * Saves the network and server information for quick future connections.
      */
-    public void savePrefs()
+    private void savePrefs()
     {
         SharedPreferences.Editor prefs = activity.getSharedPreferences().edit();
 
@@ -96,7 +96,7 @@ public class VideoServer
      * @param name The server name
      * @param url  The server url
      */
-    public void saveServer( String name, String url )
+    private void saveServer( String name, String url )
     {
         network = getNetworkName();
         this.name = name;
@@ -111,7 +111,7 @@ public class VideoServer
      *
      * @param server The server
      */
-    public void saveServer( Server server )
+    void saveServer( Server server )
     {
         saveServer( server.name, server.url );
 
@@ -142,6 +142,11 @@ public class VideoServer
         request.url = getTitlesUrl();
         request.etag = etag;
         return request;
+    }
+
+    public String getServerUrl()
+    {
+        return url;
     }
 
     private String getTitlesUrl()
@@ -185,7 +190,7 @@ public class VideoServer
      */
     private String getNetworkName()
     {
-        WifiManager manager = (WifiManager) activity.getSystemService( Context.WIFI_SERVICE );
+        WifiManager manager = (WifiManager) activity.getApplicationContext().getSystemService( Context.WIFI_SERVICE );
         WifiInfo connectionInfo = manager.getConnectionInfo();
         String ssid = connectionInfo.getSSID();
 
@@ -200,7 +205,7 @@ public class VideoServer
      *
      * @return True, if the network is connected
      */
-    public boolean isConnected()
+    private boolean isConnected()
     {
         ConnectivityManager manager = (ConnectivityManager) activity.getSystemService( Activity.CONNECTIVITY_SERVICE );
         NetworkInfo network = manager.getActiveNetworkInfo();
@@ -238,7 +243,6 @@ public class VideoServer
             }
             else if ( response.status == HttpURLConnection.HTTP_NOT_MODIFIED )
                 activity.saveTitles( name, null );
-
             else
                 discoverServer();
         }
@@ -249,7 +253,7 @@ public class VideoServer
         String title;
         String filename;
 
-        public DownloadUpdate( String filename, String title )
+        DownloadUpdate( String filename, String title )
         {
             this.title = title;
             this.filename = filename;

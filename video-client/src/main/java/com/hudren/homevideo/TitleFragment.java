@@ -34,6 +34,8 @@ import com.hudren.homevideo.model.Video;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hudren.homevideo.VideoApp.serverUrl;
+
 /**
  * Shows the title information (including seasons and episodes).
  */
@@ -134,9 +136,9 @@ public class TitleFragment extends Fragment
             final NetworkImageView poster = (NetworkImageView) rootView.findViewById( R.id.poster );
             if ( poster != null )
             {
-                if ( poster != null )
+                if ( title.poster != null )
                 {
-                    poster.setImageUrl( title.poster, VideoApp.getImageLoader() );
+                    poster.setImageUrl( serverUrl( title.poster ), VideoApp.getImageLoader() );
 
                     if ( info.plot != null )
                     {

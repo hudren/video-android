@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 25
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.hudren.homevideo"
         minSdkVersion 16
-        targetSdkVersion 23
-        versionCode 26
-        versionName "1.1.11"
+        targetSdkVersion 25
+
+        versionCode 27
+        versionName "1.1.12"
     }
     buildTypes {
         release {
@@ -17,17 +18,21 @@ android {
             proguardFiles getDefaultProguardFile( 'proguard-android.txt' ), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     compile fileTree( include: ['*.jar'], dir: 'libs' )
 
-    compile 'com.google.android.libraries.cast.companionlibrary:ccl:2.8.3'
+    compile 'com.google.android.libraries.cast.companionlibrary:ccl:2.9.1'
 
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.mcxiaoke.volley:library:1.0.18'
 
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:mediarouter-v7:23.2.1'
-    compile 'com.google.android.gms:play-services-cast:8.4'
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:mediarouter-v7:25.4.0'
+    compile 'com.google.android.gms:play-services-cast:9.8.0'
 }

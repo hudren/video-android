@@ -55,7 +55,7 @@ public class Discovery
      */
     private InetAddress getBroadcastAddress() throws IOException
     {
-        WifiManager wifi = (WifiManager) activity.getSystemService( Context.WIFI_SERVICE );
+        WifiManager wifi = (WifiManager) activity.getApplicationContext().getSystemService( Context.WIFI_SERVICE );
         DhcpInfo dhcp = wifi.getDhcpInfo();
 
         int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
@@ -102,7 +102,7 @@ public class Discovery
                     String contents = new String( packet.getData() ).trim();
                     Log.d( TAG, "received " + contents );
 
-                    response.add( new Server( contents ) );
+                    response.add( new Server( packet.getAddress(), contents ) );
                 }
                 catch ( SocketTimeoutException e )
                 {

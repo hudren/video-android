@@ -1,10 +1,15 @@
 package com.hudren.homevideo;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +34,10 @@ public class HomeActivity
         implements ITitleActivity, IVideoActivity
 {
     private static final String TAG = "HomeActivity";
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     private VideoServer server;
+    private boolean requestedPermissions;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -47,6 +54,7 @@ public class HomeActivity
         titlesFragment.setMultipane( titleFragment != null );
 
         server = new VideoServer( this );
+        VideoApp.setServer( server );
     }
 
     protected Fragment getVideoFragment()
@@ -101,7 +109,20 @@ public class HomeActivity
 
         invalidateOptionsMenu();
 
-        server.checkUpdate();
+        if ( ContextCompat.checkSelfPermission( this, Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED )
+            server.checkUpdate();
+        else if ( !requestedPermissions )
+        {
+            requestedPermissions = true;
+            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult( int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults )
+    {
+        if ( requestCode == REQUEST_WRITE_EXTERNAL_STORAGE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED )
+            server.checkUpdate();
     }
 
     /**

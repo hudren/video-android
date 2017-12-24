@@ -21,6 +21,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import static com.hudren.homevideo.VideoApp.serverUrl;
+
 /**
  * Adapter used for displaying the titles in a list.
  */
@@ -292,6 +294,6 @@ public class TitlesAdapter extends BaseAdapter
 
         NetworkImageView image = (NetworkImageView) view.findViewById( R.id.poster );
         if ( image != null )
-            image.setImageUrl( title.poster, VideoApp.getImageLoader() );
+            image.setImageUrl( serverUrl( title.poster ), VideoApp.getImageLoader() );
     }
 }

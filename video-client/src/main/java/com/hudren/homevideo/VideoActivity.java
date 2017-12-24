@@ -1,16 +1,20 @@
 package com.hudren.homevideo;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -27,7 +31,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
-import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.hudren.homevideo.model.Container;
 import com.hudren.homevideo.model.Info;
 import com.hudren.homevideo.model.Subtitle;
@@ -41,6 +44,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hudren.homevideo.VideoApp.serverUrl;
+
 /**
  * Base class for activities that play videos.
  */
@@ -48,17 +53,19 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
 {
     private static final String TAG = "HomeActivity";
     private static final double VOLUME_INCREMENT = 0.05;
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     private static final File downloadDir = Environment.getExternalStoragePublicDirectory( Environment.DIRECTORY_MOVIES );
 
     private VideoCastManager castManager;
-    private MiniController miniController;
     private CastConsumer castConsumer;
 
     private int width;
 
     protected Title title;
     protected Video video;
+
+    private List<Video> downloadVideos;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -110,15 +117,6 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
             castManager.decrementUiCounter();
 
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        if ( castManager != null )
-            castManager.removeMiniController( miniController );
-
-        super.onDestroy();
     }
 
     /**
@@ -245,7 +243,6 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
     public boolean dispatchKeyEvent( @NonNull KeyEvent event )
     {
         return castManager != null && castManager.onDispatchVolumeKeyEvent( event, VOLUME_INCREMENT ) || super.dispatchKeyEvent( event );
-
     }
 
     /**
@@ -298,9 +295,10 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
      */
     public File downloadedFile( Container container )
     {
-        File file = new File( downloadDir, container.filename );
+        String url = serverUrl( container.filename );
+        File file = url != null ? new File( downloadDir, url ) : null;
 
-        return file.exists() ? file : null;
+        return file != null && file.exists() ? file : null;
     }
 
     /**
@@ -346,7 +344,7 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
             if ( container != null )
             {
                 File file = downloadedFile( container );
-                String url = file != null ? Uri.fromFile( file ).toString() : container.url;
+                String url = file != null ? Uri.fromFile( file ).toString() : serverUrl( container.url );
 
                 Intent shareIntent = new Intent( Intent.ACTION_VIEW );
                 shareIntent.setDataAndType( Uri.parse( url ), container.mimetype );
@@ -391,7 +389,17 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
         Log.d( TAG, "starting download of " + url + " into " + filename );
 
         DownloadManager manager = (DownloadManager) getSystemService( Context.DOWNLOAD_SERVICE );
-        return manager.enqueue( request );
+        try
+        {
+            return manager.enqueue( request );
+        }
+        catch ( Exception e )
+        {
+            Log.e( TAG, "exception downloading", e );
+            Toast.makeText( this, "Unable to download video.", Toast.LENGTH_SHORT ).show();
+
+            return -1;
+        }
     }
 
     /**
@@ -399,21 +407,25 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
      *
      * @param video   The video to download
      * @param visible Notification visibility during download
+     * @return true if the download started
      */
-    public void startDownloading( Video video, boolean visible )
+    public boolean startDownloading( Video video, boolean visible )
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
         boolean compatible = prefs.getBoolean( "compatible_video", false );
 
         // Download video file
         Container container = video.getDownload( compatible );
-        long id = downloadFile( container.url, video.getFullTitle(), container.mimetype, Environment.DIRECTORY_MOVIES, visible );
-        new DownloadMonitor( this ).execute( id );
+        long id = downloadFile( serverUrl( container.url ), video.getFullTitle(), container.mimetype, Environment.DIRECTORY_MOVIES, visible );
+        if ( id > -1 )
+            new DownloadMonitor( this ).execute( id );
 
         // Download external subtitle files
         if ( video.subtitles != null )
             for ( Subtitle subtitle : video.subtitles )
-                downloadFile( subtitle.url, video.getFullTitle() + " " + subtitle.title + " subtitles", subtitle.mimetype, Environment.DIRECTORY_MOVIES, visible );
+                downloadFile( serverUrl( subtitle.url ), video.getFullTitle() + " " + subtitle.title + " subtitles", subtitle.mimetype, Environment.DIRECTORY_MOVIES, visible );
+
+        return id != -1;
     }
 
     /**
@@ -423,20 +435,29 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
      */
     public void startDownloading( List<Video> videos )
     {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
-        boolean launch = prefs.getBoolean( "launch_downloads", false );
+        if ( ContextCompat.checkSelfPermission( this, Manifest.permission.WRITE_EXTERNAL_STORAGE ) == PackageManager.PERMISSION_GRANTED )
+        {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences( this );
+            boolean launch = prefs.getBoolean( "launch_downloads", false );
+            boolean downloading = false;
 
-        // Download downloadable videos
-        if ( videos != null )
-            for ( Video video : videos )
-                if ( video.canDownload() )
-                    startDownloading( video, !launch );
+            // Download downloadable videos
+            if ( videos != null )
+                for ( Video video : videos )
+                    if ( video.canDownload() )
+                        downloading = startDownloading( video, !launch );
 
-        // Launch Android Downloads app
-        if ( launch )
-            launchDownloads();
+            // Launch Android Downloads app
+            if ( launch )
+                launchDownloads();
+            else if ( downloading )
+                Toast.makeText( this, R.string.download_started, Toast.LENGTH_SHORT ).show();
+        }
         else
-            Toast.makeText( this, R.string.download_started, Toast.LENGTH_SHORT ).show();
+        {
+            downloadVideos = videos;
+            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE );
+        }
     }
 
     /**
@@ -464,8 +485,8 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
 
         if ( title.poster != null || title.thumb != null )
         {
-            metadata.addImage( new WebImage( Uri.parse( title.thumb != null ? title.thumb : title.poster ) ) );
-            metadata.addImage( new WebImage( Uri.parse( title.poster != null ? title.poster : title.thumb ) ) );
+            metadata.addImage( new WebImage( Uri.parse( serverUrl( title.thumb != null ? title.thumb : title.poster ) ) ) );
+            metadata.addImage( new WebImage( Uri.parse( serverUrl( title.poster != null ? title.poster : title.thumb ) ) ) );
         }
 
         // TV series
@@ -488,7 +509,7 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
                     MediaTrack track = new MediaTrack.Builder( id++, MediaTrack.TYPE_TEXT )
                             .setName( subtitle.title )
                             .setSubtype( MediaTrack.SUBTYPE_SUBTITLES )
-                            .setContentId( subtitle.url )
+                            .setContentId( serverUrl( subtitle.url ) )
                             .setContentType( subtitle.mimetype )
                             .setLanguage( subtitle.language )
                             .build();
@@ -498,7 +519,7 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
             }
         }
 
-        MediaInfo mediaInfo = new MediaInfo.Builder( container.url )
+        MediaInfo mediaInfo = new MediaInfo.Builder( serverUrl( container.url ) )
                 .setStreamType( MediaInfo.STREAM_TYPE_BUFFERED )
                 .setMetadata( metadata )
                 .setContentType( container.mimetype )
@@ -511,5 +532,25 @@ public abstract class VideoActivity extends AppCompatActivity implements IPlayba
         // Start new media at saved position
         long pos = castConsumer.getMediaPosition( mediaInfo );
         castManager.startVideoCastControllerActivity( this, mediaInfo, (int) pos, true );
+    }
+
+    @Override
+    public void onRequestPermissionsResult( int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults )
+    {
+        switch ( requestCode )
+        {
+        case REQUEST_WRITE_EXTERNAL_STORAGE:
+        {
+            if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED )
+            {
+                if ( downloadVideos != null )
+                    startDownloading( downloadVideos );
+            }
+            else
+                Toast.makeText( this, "Permission denied, download canceled.", Toast.LENGTH_LONG ).show();
+
+            downloadVideos = null;
+        }
+        }
     }
 }
